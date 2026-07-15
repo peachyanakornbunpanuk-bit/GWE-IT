@@ -44,13 +44,17 @@ export const useSettingStore = defineStore('setting', {
 
     async seedDefaultSettings() {
       const defaults = [
-        { type: 'category', value: 'Notebook' },
-        { type: 'category', value: 'Monitor' },
-        { type: 'category', value: 'Mouse' },
-        { type: 'category', value: 'Keyboard' },
-        { type: 'category', value: 'GPU' },
+        { type: 'category', value: 'Lighting' },
+        { type: 'category', value: 'Audio' },
+        { type: 'category', value: 'Camera' },
         { type: 'category', value: 'Network' },
-        { type: 'category', value: 'Cable' },
+        { type: 'category', value: 'IT Equipment' },
+        { type: 'category', value: 'Peripherals' },
+        { type: 'category', value: 'Office Equipment' },
+        { type: 'category', value: 'Furniture' },
+        { type: 'category', value: 'Stationery' },
+        { type: 'category', value: 'General' },
+        { type: 'category', value: 'Cleaning Supplies' },
         { type: 'supplier', value: 'Apple Store' },
         { type: 'supplier', value: 'IT City' },
         { type: 'supplier', value: 'JIB Computer' },
@@ -59,9 +63,14 @@ export const useSettingStore = defineStore('setting', {
         { type: 'department', value: 'HR' },
         { type: 'department', value: 'Accounting' },
         { type: 'department', value: 'Sales' },
-        { type: 'location', value: 'IT Server Room' },
-        { type: 'location', value: 'Storage Closet 1' },
-        { type: 'location', value: 'Studio A' }
+        { type: 'location', value: 'Studio 1' },
+        { type: 'location', value: 'Studio 2' },
+        { type: 'location', value: 'Studio 3' },
+        { type: 'location', value: 'Main Office' },
+        { type: 'location', value: 'Server Room' },
+        { type: 'location', value: 'Storage Room A' },
+        { type: 'location', value: 'Storage Room B' },
+        { type: 'location', value: 'Meeting Room 1' }
       ]
       
       for (const item of defaults) {
