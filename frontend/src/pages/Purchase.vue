@@ -69,6 +69,17 @@
                 </div>
 
                 <div class="col-12 col-sm-6">
+                  <q-select 
+                    outlined 
+                    v-model="form.location" 
+                    :options="settingStore.locations" 
+                    label="Default Location (Room/Area) *"
+                    required
+                    :rules="[val => !!val || 'Location is required']"
+                  />
+                </div>
+
+                <div class="col-12 col-sm-6">
                   <q-input 
                     outlined 
                     v-model="form.purchase_date" 
@@ -240,7 +251,8 @@ const form = ref({
   supplier: '', 
   cost: null as any, 
   quantity: 1,
-  purchase_date: getTodayDate()
+  purchase_date: getTodayDate(),
+  location: ''
 })
 
 onMounted(() => {
@@ -263,8 +275,8 @@ const openDetails = (_evt: any, row: any) => {
 
 const onPurchase = async () => {
   try {
-    // Pass quantity and date to the store
-    await txStore.recordPurchase(form.value.item_name, form.value.category, form.value.supplier, form.value.cost, form.value.quantity, form.value.purchase_date)
+    // Pass quantity, date, and location to the store
+    await txStore.recordPurchase(form.value.item_name, form.value.category, form.value.supplier, form.value.cost, form.value.quantity, form.value.purchase_date, form.value.location)
     
     $q.notify({ 
       color: 'positive', 
@@ -279,6 +291,7 @@ const onPurchase = async () => {
     form.value.cost = null as any
     form.value.quantity = 1
     form.value.purchase_date = getTodayDate()
+    form.value.location = ''
     
     if (purchaseForm.value) {
       // Small timeout to allow Vue reactivity to flush before resetting validation

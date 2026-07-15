@@ -699,23 +699,23 @@ app.get('/api/purchase', (req, res) => {
 });
 
 app.post('/api/purchase', (req, res) => {
-    const { item_name, category, supplier, unit_cost, purchase_date, quantity = 1, user } = req.body;
+    const { item_name, category, supplier, unit_cost, purchase_date, quantity = 1, user, location = '-' } = req.body;
     
     db.serialize(() => {
         const totalCost = unit_cost * quantity;
         
-        db.run(`INSERT INTO purchases (item_name, category, supplier, cost, unit_cost, quantity, purchase_date, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'Received')`, [item_name, category, supplier, totalCost, unit_cost, quantity, purchase_date]);
+        db.run(`INSERT INTO purchases (item_name, category, supplier, cost, unit_cost, quantity, purchase_date, status, location) VALUES (?, ?, ?, ?, ?, ?, ?, 'Received', ?)`, [item_name, category, supplier, totalCost, unit_cost, quantity, purchase_date, location]);
         
         getNextAssetId(category, (prefix, nextNum) => {
             db.get("SELECT image_url FROM assets WHERE name = ? AND image_url IS NOT NULL AND image_url != '' LIMIT 1", [item_name], (err, imgRow) => {
                 const foundImageUrl = imgRow ? imgRow.image_url : null;
                 
                 db.run('BEGIN TRANSACTION');
-                const stmt = db.prepare(`INSERT INTO assets (id, name, category, status, holder, value, image_url) VALUES (?, ?, ?, 'Available', '-', ?, ?)`);
+                const stmt = db.prepare(`INSERT INTO assets (id, name, category, status, holder, value, image_url, location) VALUES (?, ?, ?, 'Available', '-', ?, ?, ?)`);
                 let currentNum = nextNum;
                 for (let i = 0; i < quantity; i++) {
                     const assetId = `${prefix}-${String(currentNum).padStart(4, '0')}`;
-                    stmt.run(assetId, item_name, category, unit_cost, foundImageUrl);
+                    stmt.run(assetId, item_name, category, unit_cost, foundImageUrl, location);
                     logAudit(assetId, 'PURCHASED', `Procured from ${supplier} via bulk order`, user);
                     currentNum++;
                 }

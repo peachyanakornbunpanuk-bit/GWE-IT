@@ -78,6 +78,7 @@ const db = new sqlite3.Database(url, (err) => {
                     status TEXT NOT NULL
                 )
             `);
+            db.run("ALTER TABLE purchases ADD COLUMN location TEXT DEFAULT '-'", (err) => { /* ignore if exists */ });
             db.run(`
                 CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,

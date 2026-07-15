@@ -239,7 +239,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useAssetStore } from '../stores/assetStore'
 import { useSettingStore } from '../stores/settingStore'
@@ -290,6 +290,13 @@ const qrInfoValue = ref('')
 const editingId = ref('')
 const form = ref({ name: '', category: '', status: 'Available', value: 0, image_url: '', location: '' })
 const imageFile = ref<File | null>(null)
+
+watch(addDialog, (val) => {
+  if (!val) {
+    form.value = { name: '', category: '', status: 'Available', value: 0, image_url: '', location: '' }
+    imageFile.value = null
+  }
+})
 
 // Hidden file input ref
 const fileInput = ref<HTMLInputElement | null>(null)

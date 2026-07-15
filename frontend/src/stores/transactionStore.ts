@@ -60,9 +60,9 @@ export const useTransactionStore = defineStore('transaction', {
       useAssetStore().fetchAssets()
     },
 
-    async recordPurchase(item_name: string, category: string, supplier: string, unit_cost: number, quantity: number = 1, purchase_date: string) {
+    async recordPurchase(item_name: string, category: string, supplier: string, unit_cost: number, quantity: number = 1, purchase_date: string, location: string) {
       await axios.post(`${API_URL}/purchase`, {
-        item_name, category, supplier, unit_cost, purchase_date, quantity
+        item_name, category, supplier, unit_cost, purchase_date, quantity, location
       })
       await this.fetchAllTransactions()
       useAssetStore().fetchAssets()
