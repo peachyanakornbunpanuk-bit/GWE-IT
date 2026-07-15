@@ -1,0 +1,243 @@
+<template>
+  <q-page padding class="q-pa-lg fade-in">
+    <div class="row items-center q-mb-lg">
+      <div>
+        <div class="text-h4 text-weight-bold text-blue-grey-9">Overview</div>
+        <div class="text-subtitle1 text-grey-6">Welcome back to IAMS Enterprise</div>
+      </div>
+    </div>
+
+    <div class="row q-col-gutter-md">
+      <!-- KPI Cards -->
+      <div class="col-12 col-md-3">
+        <q-card class="clean-card">
+          <q-card-section class="row items-center justify-between">
+            <div>
+              <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Total Asset</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-blue-grey-9">{{ store.totalAssets }}</div>
+            </div>
+            <q-avatar color="blue-50" text-color="blue-700" icon="inventory_2" size="56px" class="shadow-1" />
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-3">
+        <q-card class="clean-card">
+          <q-card-section class="row items-center justify-between">
+            <div>
+              <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Available</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-green-7">{{ store.availableAssets }}</div>
+            </div>
+            <q-avatar color="green-50" text-color="green-700" icon="check_circle" size="56px" class="shadow-1" />
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-3">
+        <q-card class="clean-card">
+          <q-card-section class="row items-center justify-between">
+            <div>
+              <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Borrowed</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-orange-7">{{ store.borrowedAssets }}</div>
+            </div>
+            <q-avatar color="orange-50" text-color="orange-700" icon="shopping_bag" size="56px" class="shadow-1" />
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-3">
+        <q-card class="clean-card">
+          <q-card-section class="row items-center justify-between">
+            <div>
+              <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Repair / Damaged</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-red-7">{{ store.repairDamagedAssets }}</div>
+            </div>
+            <q-avatar color="red-50" text-color="red-700" icon="build" size="56px" class="shadow-1" />
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
+    <!-- Analytics Charts -->
+    <div class="row q-col-gutter-md q-mt-sm">
+      <div class="col-12 col-md-6">
+        <q-card class="clean-card shadow-sm h-full">
+          <q-card-section>
+            <div class="text-h6 text-blue-grey-9 text-weight-bold">Assets by Status</div>
+          </q-card-section>
+          <q-card-section class="flex flex-center">
+            <VueApexCharts type="donut" width="100%" height="300" :options="donutOptions" :series="donutSeries" />
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-6">
+        <q-card class="clean-card shadow-sm h-full">
+          <q-card-section>
+            <div class="text-h6 text-blue-grey-9 text-weight-bold">Financial Value by Category</div>
+          </q-card-section>
+          <q-card-section>
+            <VueApexCharts type="bar" width="100%" height="300" :options="barOptions" :series="barSeries" />
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+
+    <div class="row q-col-gutter-md q-mt-md">
+      <div class="col-12 col-md-8">
+        <q-card class="clean-card h-full">
+          <q-card-section class="row items-center justify-between q-pb-sm q-pt-md">
+            <div class="text-h6 text-blue-grey-9 text-weight-bold">Recent Assets</div>
+            <q-input outlined dense v-model="search" placeholder="Search assets..." class="search-input bg-white">
+              <template v-slot:prepend>
+                <q-icon name="search" color="grey-6" />
+              </template>
+            </q-input>
+          </q-card-section>
+          <q-table
+            flat
+            class="bg-transparent"
+            :rows="store.assets"
+            :columns="columns"
+            row-key="id"
+            :filter="search"
+            :rows-per-page-options="[5]"
+          >
+            <template v-slot:body-cell-status="props">
+              <q-td :props="props">
+                <q-chip
+                  :class="getBadgeClass(props.row.status)"
+                  dense
+                  square
+                  class="text-weight-bold q-px-sm"
+                  style="border-radius: 6px;"
+                >
+                  {{ props.row.status }}
+                </q-chip>
+              </q-td>
+            </template>
+          </q-table>
+        </q-card>
+      </div>
+
+      <!-- Low Stock & Quick Actions -->
+      <div class="col-12 col-md-4">
+        <q-card class="clean-card h-full">
+          <q-card-section class="q-pb-sm q-pt-md">
+            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center" style="line-height: 1.5; padding-top: 4px;">
+              <q-icon name="warning" color="warning" class="q-mr-sm" size="24px" /> Low Stock Alerts
+            </div>
+          </q-card-section>
+          <q-list separator class="q-px-sm">
+            <q-item v-for="item in lowStock" :key="item.name" class="q-py-md">
+              <q-item-section>
+                <q-item-label class="text-weight-medium text-blue-grey-9">{{ item.name }}</q-item-label>
+                <q-item-label caption>{{ item.category }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-chip color="red-50" text-color="red-700" dense class="text-weight-bold" style="border-radius: 6px;">
+                  {{ item.qty }} Left
+                </q-chip>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-card>
+      </div>
+    </div>
+  </q-page>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { useAssetStore } from '../stores/assetStore'
+import VueApexCharts from 'vue3-apexcharts'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3000/api'
+const store = useAssetStore()
+const search = ref('')
+
+// Analytics State
+const donutOptions = ref({
+  chart: { type: 'donut', fontFamily: 'inherit' },
+  labels: [],
+  colors: ['#4ade80', '#fbbf24', '#f87171', '#60a5fa', '#9333ea'],
+  legend: { position: 'bottom' },
+  dataLabels: { enabled: false }
+})
+const donutSeries = ref([])
+
+const barOptions = ref({
+  chart: { type: 'bar', fontFamily: 'inherit', toolbar: { show: false } },
+  xaxis: { categories: [] },
+  colors: ['#3b82f6'],
+  dataLabels: { enabled: false },
+  plotOptions: { bar: { borderRadius: 4, horizontal: false } },
+  yaxis: {
+    labels: {
+      formatter: (value) => { return '฿' + value.toLocaleString() }
+    }
+  }
+})
+const barSeries = ref([{ name: 'Asset Value (฿)', data: [] }])
+
+const fetchAnalytics = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/analytics`)
+    const data = res.data
+    
+    // Status Donut
+    donutOptions.value = { ...donutOptions.value, labels: Object.keys(data.statuses) }
+    donutSeries.value = Object.values(data.statuses)
+    
+    // Category Value Bar
+    const categories = Object.keys(data.categories)
+    const values = categories.map(c => data.categories[c].value)
+    barOptions.value = { ...barOptions.value, xaxis: { categories } }
+    barSeries.value = [{ name: 'Total Value (฿)', data: values }]
+  } catch(e) {
+    console.error("Analytics fetch error:", e)
+  }
+}
+
+onMounted(() => {
+  store.fetchAssets()
+  fetchAnalytics()
+})
+
+const getBadgeClass = (status: string) => {
+  switch (status) {
+    case 'Available': return 'badge-soft-positive'
+    case 'Borrowed': return 'badge-soft-warning'
+    case 'Repair': return 'badge-soft-info'
+    case 'Damaged': return 'badge-soft-negative'
+    default: return 'badge-soft-grey'
+  }
+}
+
+const columns = [
+  { name: 'id', label: 'ID', field: 'id', align: 'left', sortable: true },
+  { name: 'name', label: 'Asset Name', field: 'name', align: 'left', sortable: true },
+  { name: 'category', label: 'Category', field: 'category', align: 'left', sortable: true },
+  { name: 'status', label: 'Status', field: 'status', align: 'center', sortable: true }
+] as any
+
+const lowStock = computed(() => {
+  const counts: Record<string, { category: string, qty: number }> = {}
+  
+  // Count only available assets
+  store.assets.forEach(a => {
+    if (a.status === 'Available') {
+      if (!counts[a.name]) counts[a.name] = { category: a.category, qty: 0 }
+      counts[a.name].qty++
+    }
+  })
+
+  // Ensure assets that exist but have 0 available are counted as 0
+  store.assets.forEach(a => {
+    if (!counts[a.name]) counts[a.name] = { category: a.category, qty: 0 }
+  })
+
+  return Object.entries(counts)
+    .map(([name, data]) => ({ name, category: data.category, qty: data.qty }))
+    .filter(item => item.qty < 3) // Less than 3 is considered low stock
+    .sort((a, b) => a.qty - b.qty)
+    .slice(0, 5) // Show only the top 5 most critical
+})
+</script>
