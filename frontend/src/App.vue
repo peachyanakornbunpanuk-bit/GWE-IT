@@ -17,7 +17,7 @@
             <q-list class="q-py-sm">
               <q-item-label header class="text-weight-bold text-blue-grey-9 row items-center justify-between">
                 <span>Alerts & Notifications</span>
-                <q-btn flat dense round icon="done_all" size="sm" @click="notifStore.markAllAsRead(authStore.user?.username, authStore.user?.role)" v-if="notifStore.unreadCount > 0">
+                <q-btn flat dense round icon="done_all" size="sm" @click="notifStore.markAllAsRead(authStore.user?.username || '', authStore.user?.role || '')" v-if="notifStore.unreadCount > 0">
                   <q-tooltip>Mark all as read</q-tooltip>
                 </q-btn>
               </q-item-label>
@@ -181,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAssetStore } from './stores/assetStore'
 import { useTransactionStore } from './stores/transactionStore'
@@ -256,7 +256,7 @@ const handleNotifClick = (notif: any) => {
 const searchResults = computed(() => {
   if (!searchQuery.value) return []
   const q = searchQuery.value.toLowerCase()
-  const results = []
+  const results: Array<{id: string, title: string, subtitle: string, type: string, route: string}> = []
 
   // Search Assets
   assetStore.assets.forEach(a => {

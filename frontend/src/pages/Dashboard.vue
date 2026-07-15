@@ -148,22 +148,23 @@ import { ref, computed, onMounted } from 'vue'
 import { useAssetStore } from '../stores/assetStore'
 import VueApexCharts from 'vue3-apexcharts'
 import axios from 'axios'
+import type { ApexOptions } from 'apexcharts'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3000/api'
 const store = useAssetStore()
 const search = ref('')
 
 // Analytics State
-const donutOptions = ref({
+const donutOptions = ref<ApexOptions>({
   chart: { type: 'donut', fontFamily: 'inherit' },
   labels: [],
   colors: ['#4ade80', '#fbbf24', '#f87171', '#60a5fa', '#9333ea'],
   legend: { position: 'bottom' },
   dataLabels: { enabled: false }
 })
-const donutSeries = ref([])
+const donutSeries = ref<number[]>([])
 
-const barOptions = ref({
+const barOptions = ref<ApexOptions>({
   chart: { type: 'bar', fontFamily: 'inherit', toolbar: { show: false } },
   xaxis: { categories: [] },
   colors: ['#3b82f6'],
@@ -171,11 +172,11 @@ const barOptions = ref({
   plotOptions: { bar: { borderRadius: 4, horizontal: false } },
   yaxis: {
     labels: {
-      formatter: (value) => { return '฿' + value.toLocaleString() }
+      formatter: (value: number) => { return '฿' + value.toLocaleString() }
     }
   }
 })
-const barSeries = ref([{ name: 'Asset Value (฿)', data: [] }])
+const barSeries = ref<any[]>([{ name: 'Asset Value (฿)', data: [] }])
 
 const fetchAnalytics = async () => {
   try {
@@ -184,7 +185,7 @@ const fetchAnalytics = async () => {
     
     // Status Donut
     donutOptions.value = { ...donutOptions.value, labels: Object.keys(data.statuses) }
-    donutSeries.value = Object.values(data.statuses)
+    donutSeries.value = Object.values(data.statuses) as number[]
     
     // Category Value Bar
     const categories = Object.keys(data.categories)

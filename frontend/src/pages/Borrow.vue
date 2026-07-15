@@ -121,7 +121,7 @@
               :columns="columns"
               row-key="group_id"
               :pagination="{ rowsPerPage: 10 }"
-              @row-click="(evt, row) => openDetailsDialog(row)"
+              @row-click="(_, row) => openDetailsDialog(row)"
             >
               <template v-slot:body-cell-employee_name="props">
                 <q-td :props="props" class="text-weight-bold text-primary cursor-pointer">

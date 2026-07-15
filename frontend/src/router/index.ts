@@ -20,7 +20,7 @@ export const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
   
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
@@ -28,7 +28,8 @@ router.beforeEach((to, from, next) => {
   }
   
   if (to.meta.roles && authStore.user) {
-    if (!to.meta.roles.includes(authStore.user.role)) {
+    const roles = to.meta.roles as string[]
+    if (!roles.includes(authStore.user.role)) {
       // Employee trying to access unauthorized route
       return next('/')
     }

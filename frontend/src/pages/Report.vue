@@ -112,10 +112,10 @@ const exportAssetsPDF = () => {
     </div>
   `
   
-  $q.loading.show({ message: 'Generating PDF...' })
   html2pdf().from(element).set({
     margin: [15, 10],
     filename: 'IAMS_Asset_Report.pdf',
+    // @ts-ignore
     pagebreak: { mode: ['css', 'legacy'], avoid: 'tr' },
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { scale: 2, useCORS: true },
@@ -164,10 +164,10 @@ const exportBorrowsPDF = () => {
     </div>
   `
   
-  $q.loading.show({ message: 'Generating PDF...' })
   html2pdf().from(element).set({
     margin: [15, 10],
     filename: 'IAMS_Borrow_Report.pdf',
+    // @ts-ignore
     pagebreak: { mode: ['css', 'legacy'], avoid: 'tr' },
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { scale: 2, useCORS: true },
@@ -228,6 +228,7 @@ const exportChecklistPDF = () => {
   html2pdf().from(element).set({
     margin: [15, 10],
     filename: 'GWE_Stock_Checklist.pdf',
+    // @ts-ignore
     pagebreak: { mode: ['css', 'legacy'], avoid: ['.category-block', 'tr'] },
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { scale: 2, useCORS: true },

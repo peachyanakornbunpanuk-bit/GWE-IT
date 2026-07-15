@@ -241,7 +241,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useQuasar } from 'quasar'
-import { useRouter } from 'vue-router'
 import { useAssetStore } from '../stores/assetStore'
 import { useSettingStore } from '../stores/settingStore'
 import { useAuthStore } from '../stores/authStore'
@@ -250,7 +249,6 @@ import axios from 'axios'
 import * as XLSX from 'xlsx'
 
 const $q = useQuasar()
-const router = useRouter()
 const store = useAssetStore()
 const settingStore = useSettingStore()
 const authStore = useAuthStore()
@@ -288,7 +286,6 @@ const qrAssetId = ref('')
 const qrAssetType = ref('')
 const qrAssetName = ref('')
 const qrInfoValue = ref('')
-const qrBorrowValue = ref('')
 
 const editingId = ref('')
 const form = ref({ name: '', category: '', status: 'Available', value: 0, image_url: '', location: '' })
