@@ -216,7 +216,10 @@ app.get('/api/notifications', (req, res) => {
     }
     
     db.all(query, params, (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
+        if (err) {
+            console.error("GET /api/notifications Error:", err.message);
+            return res.status(500).json({ error: err.message });
+        }
         res.json(rows);
     });
 });
@@ -319,7 +322,10 @@ app.post('/api/settings', (req, res) => {
         `INSERT INTO settings (type, value) VALUES (?, ?)`,
         [type, value],
         function(err) {
-            if (err) return res.status(500).json({ error: err.message });
+            if (err) {
+                console.error("POST /api/settings Error:", err.message);
+                return res.status(500).json({ error: err.message });
+            }
             res.json({ message: "Setting added successfully", id: this.lastID });
         }
     );
