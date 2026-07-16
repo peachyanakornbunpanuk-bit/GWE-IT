@@ -37,7 +37,7 @@
 
     <q-page-container>
       <q-page class="row justify-center items-center window-height" style="background: transparent;">
-        <div class="hero-content text-center" style="color: #faf5ec; z-index: 5; padding-top: 4rem;">
+        <div class="hero-content text-center tilt-target" style="color: #faf5ec; z-index: 5; padding: 4rem; border-radius: 16px;">
           <div class="hero-label fade-up">Enterprise Asset Management<span></span>Est. 2024</div>
           <h1 class="hero-title fade-up delay-1"> Greenwood Entertainment</h1>
           <p class="hero-tag fade-up delay-2">
@@ -56,7 +56,7 @@
 
     <!-- Login Modal -->
     <q-dialog v-model="loginDialog" transition-show="fade" transition-hide="fade">
-      <q-card class="clean-card shadow-10" style="width: 100%; max-width: 420px; border-radius: 8px;">
+      <q-card class="clean-card shadow-10 tilt-target" style="width: 100%; max-width: 420px; border-radius: 8px;">
         <q-card-section class="q-pa-xl text-center" style="border-radius: 8px 8px 0 0; border-bottom: 1px solid var(--line-soft);">
           <div class="column justify-center items-center">
             <span style="font-family: 'Fraunces', serif; letter-spacing: 0.02em; font-size: 1.7rem; font-weight: 400; color: var(--ink);">Greenwood Entertainment</span>
@@ -115,6 +115,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from '../stores/authStore'
+import VanillaTilt from 'vanilla-tilt'
 
 const username = ref('')
 const password = ref('')
@@ -162,6 +163,18 @@ const animate = () => {
 onMounted(() => {
   window.addEventListener('mousemove', updateMouse)
   animate()
+  
+  // Initialize 3D Glassmorphism tilt on login modal
+  const tiltElements = document.querySelectorAll('.tilt-target')
+  if (tiltElements.length) {
+    VanillaTilt.init(tiltElements as any, {
+      max: 10,
+      speed: 400,
+      glare: true,
+      'max-glare': 0.2,
+      scale: 1.02
+    })
+  }
 })
 
 onBeforeUnmount(() => {
@@ -177,7 +190,7 @@ onBeforeUnmount(() => {
   width: 150vw;
   height: 150vw;
   border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(227, 213, 193, 0.15) 0%, rgba(201, 184, 158, 0.05) 30%, transparent 60%);
+  background: radial-gradient(circle at center, rgba(227, 213, 193, 0.75) 0%, rgba(201, 184, 158, 0.4) 30%, transparent 60%);
   filter: blur(40px);
   pointer-events: none;
   z-index: 1;
