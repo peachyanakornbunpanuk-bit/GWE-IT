@@ -5,6 +5,7 @@
       <div class="hero-veil"></div>
       <div class="hero-beam"></div>
     </div>
+    <div ref="vantaRef" class="vanta-bg"></div>
     
     <q-header class="bg-transparent text-white fade-down" style="position: absolute; z-index: 10; background: linear-gradient(180deg, rgba(30, 22, 16, 0.35) 0%, rgba(30, 22, 16, 0.1) 60%, transparent 100%); padding-bottom: 0.5rem;">
       <q-toolbar class="q-px-xl q-py-sm">
@@ -107,10 +108,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from '../stores/authStore'
+import * as THREE from 'three'
+// @ts-ignore
+import FOG from 'vanta/dist/vanta.fog.min'
 
 const username = ref('')
 const password = ref('')
@@ -136,9 +140,42 @@ const handleLogin = async () => {
   
   loading.value = false
 }
+
+const vantaRef = ref<HTMLElement | null>(null)
+let vantaEffect: any = null
+
+onMounted(() => {
+  vantaEffect = FOG({
+    el: vantaRef.value,
+    THREE: THREE,
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    highlightColor: 0xe3d5c1,
+    midtoneColor: 0xc9b89e,
+    lowlightColor: 0xb16a48,
+    baseColor: 0x4a4036,
+    blurFactor: 0.7,
+    speed: 1.2,
+    zoom: 1.0
+  })
+})
+
+onBeforeUnmount(() => {
+  if (vantaEffect) vantaEffect.destroy()
+})
 </script>
 
 <style scoped>
+.vanta-bg {
+  position: absolute; inset: 0;
+  z-index: -1;
+  mix-blend-mode: soft-light;
+  opacity: 0.8;
+  pointer-events: none;
+}
 .hero-image {
   position: fixed; inset: 0;
   z-index: 0;
