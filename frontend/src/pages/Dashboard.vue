@@ -124,19 +124,31 @@
               <q-icon name="warning" color="warning" class="q-mr-sm" size="24px" /> Low Stock Alerts
             </div>
           </q-card-section>
-          <q-list separator class="q-px-sm">
-            <q-item v-for="item in lowStock" :key="item.name" class="q-py-md">
-              <q-item-section>
-                <q-item-label class="text-weight-medium text-blue-grey-9">{{ item.name }}</q-item-label>
-                <q-item-label caption>{{ item.category }}</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-chip color="red-50" text-color="red-700" dense class="text-weight-bold" style="border-radius: 6px;">
-                  {{ item.qty }} Left
-                </q-chip>
-              </q-item-section>
-            </q-item>
-          </q-list>
+          <div style="max-height: 380px; overflow-y: auto;" class="custom-scroll">
+            <q-list separator class="q-px-sm">
+              <q-item v-for="item in lowStock" :key="item.name" class="q-py-md transition-all">
+                <q-item-section>
+                  <q-item-label class="text-weight-medium text-blue-grey-9">{{ item.name }}</q-item-label>
+                  <q-item-label caption>{{ item.category }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-chip v-if="item.qty === 0" color="red-6" text-color="white" dense class="text-weight-bold shadow-1" style="border-radius: 6px;">
+                    Out of Stock
+                  </q-chip>
+                  <q-chip v-else color="warning" text-color="dark" dense class="text-weight-bold shadow-1" style="border-radius: 6px;">
+                    {{ item.qty }} Left
+                  </q-chip>
+                </q-item-section>
+              </q-item>
+
+              <q-item v-if="lowStock.length === 0" class="q-py-xl text-center text-grey-6 flex flex-center">
+                <q-item-section>
+                  <q-icon name="check_circle_outline" size="40px" class="q-mb-sm text-positive" />
+                  All stock levels are optimal.
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
         </q-card>
       </div>
     </div>
@@ -237,8 +249,7 @@ const lowStock = computed(() => {
 
   return Object.entries(counts)
     .map(([name, data]) => ({ name, category: data.category, qty: data.qty }))
-    .filter(item => item.qty < 3) // Less than 3 is considered low stock
+    .filter(item => item.qty < 5) // Less than 5 is considered low stock
     .sort((a, b) => a.qty - b.qty)
-    .slice(0, 5) // Show only the top 5 most critical
 })
 </script>
