@@ -98,18 +98,13 @@ h1, h2, h3, h4, h5, h6, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-
   border-bottom: 1px solid var(--line-soft);
 }
 
-/* Scrollbar styling for organic theme */
+/* Hide scrollbar completely but allow scrolling */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  display: none;
+  width: 0;
+  background: transparent;
 }
-::-webkit-scrollbar-track {
-  background: var(--cream-soft); 
-}
-::-webkit-scrollbar-thumb {
-  background: var(--sage); 
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--terracotta); 
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

@@ -16,9 +16,9 @@
         <q-space />
         
         <div class="nav-links gt-sm">
-          <a href="#">Asset Tracking</a>
-          <a href="#">Inventory</a>
-          <a href="#">Maintenance</a>
+          <span class="cursor-pointer" @click="loginDialog = true">Asset Tracking</span>
+          <span class="cursor-pointer" @click="loginDialog = true">Inventory</span>
+          <span class="cursor-pointer" @click="loginDialog = true">Maintenance</span>
         </div>
         
         <q-space />
@@ -190,7 +190,7 @@ const handleLogin = async () => {
 .nav-links {
   display: flex; gap: 2.2rem;
 }
-.nav-links a {
+.nav-links span {
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   letter-spacing: 0.16em;
@@ -202,14 +202,14 @@ const handleLogin = async () => {
   position: relative;
   text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
-.nav-links a::after {
+.nav-links span::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px;
   background: var(--terracotta);
   transform: scaleX(0); transform-origin: left;
   transition: transform 500ms ease;
 }
-.nav-links a:hover { color: #faf5ec; }
-.nav-links a:hover::after { transform: scaleX(1); }
+.nav-links span:hover { color: #faf5ec; }
+.nav-links span:hover::after { transform: scaleX(1); }
 
 .login-btn-top {
   color: rgba(250, 245, 236, 0.95);
