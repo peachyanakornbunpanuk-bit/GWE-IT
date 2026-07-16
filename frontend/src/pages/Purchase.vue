@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg fade-in">
     <div class="row items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">Procurement</div>
+        <div class="text-h4 text-weight-bold text-dark">Procurement</div>
         <div class="text-subtitle1 text-grey-6">Purchase and automatically ingest new hardware</div>
       </div>
     </div>
@@ -14,7 +14,7 @@
       <div class="col-12 col-xl-5 col-lg-6">
         <q-card class="clean-card shadow-sm">
           <q-card-section class="q-pb-none q-pt-lg q-px-lg">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="shopping_cart" class="q-mr-sm text-primary" size="28px" /> New Purchase
             </div>
             <div class="text-caption text-grey-6 q-mt-xs">Record a purchase to automatically generate asset tags.</div>
@@ -128,7 +128,7 @@
       <div class="col-12 col-xl-7 col-lg-6">
         <q-card class="clean-card shadow-sm h-full">
           <q-card-section class="q-pb-none q-pt-lg q-px-lg">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="history" class="q-mr-sm text-grey-6" size="28px" /> Procurement Ledger
             </div>
             <div class="text-caption text-grey-6 q-mt-xs">Historical log of all company hardware purchases. Click a row to see details.</div>
@@ -146,7 +146,7 @@
               <template v-slot:body-cell-item_name="props">
                 <q-td :props="props" class="text-weight-bold text-primary">
                   {{ props.row.item_name }}
-                  <q-chip v-if="props.row.quantity > 1" size="sm" color="blue-1" class="text-weight-bold text-primary q-ml-sm">
+                  <q-chip v-if="props.row.quantity > 1" size="sm" color="orange-1" class="text-weight-bold text-primary q-ml-sm">
                     x{{ props.row.quantity }}
                   </q-chip>
                   <div class="text-caption text-grey-6">{{ props.row.category }}</div>
@@ -178,7 +178,7 @@
           <div class="row q-col-gutter-y-md">
             <div class="col-12">
               <div class="text-caption text-grey-6 text-uppercase">Item Name</div>
-              <div class="text-h6 text-weight-bold text-blue-grey-9">{{ selectedPurchase.item_name }}</div>
+              <div class="text-h6 text-weight-bold text-dark">{{ selectedPurchase.item_name }}</div>
             </div>
             
             <div class="col-6">

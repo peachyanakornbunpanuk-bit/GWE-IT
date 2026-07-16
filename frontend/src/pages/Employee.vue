@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg fade-in">
     <div class="row justify-between items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">Employee Management</div>
+        <div class="text-h4 text-weight-bold text-dark">Employee Management</div>
         <div class="text-subtitle1 text-grey-6">Manage staff and departments</div>
       </div>
       <q-btn color="primary" icon="add" label="Add Employee" @click="openDialog" unelevated class="q-px-md q-py-sm" style="border-radius: 8px" />
@@ -26,7 +26,7 @@
     <q-dialog v-model="dialog">
       <q-card style="min-width: 400px" class="clean-card">
         <q-card-section>
-          <div class="text-h6 text-blue-grey-9 text-weight-bold">Add Employee</div>
+          <div class="text-h6 text-dark text-weight-bold">Add Employee</div>
         </q-card-section>
         <q-card-section>
           <q-form @submit="onSubmit" class="q-gutter-md">

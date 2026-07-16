@@ -66,12 +66,14 @@ h1, h2, h3, h4, h5, h6, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-
 }
 
 .q-table th {
-  color: var(--ink-mute) !important;
+  background: var(--cream-soft) !important;
+  color: var(--ink-soft) !important;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  border-bottom: 1px solid var(--line) !important;
 }
 
 .q-table td {
@@ -81,6 +83,13 @@ h1, h2, h3, h4, h5, h6, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-
 .q-drawer {
   background: var(--cream-soft) !important;
   border-right: 1px solid var(--line-soft);
+}
+
+.active-nav {
+  background: var(--sand) !important;
+  color: var(--terracotta-deep) !important;
+  font-weight: 500;
+  border-right: 3px solid var(--terracotta);
 }
 
 .q-header {

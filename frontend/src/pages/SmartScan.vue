@@ -20,7 +20,7 @@
     <div v-else-if="successMsg" class="flex flex-center full-width">
       <q-card class="clean-card shadow-12 q-pa-xl text-center" style="width: 100%; max-width: 450px; border-radius: 16px;">
         <q-icon name="check_circle" color="positive" size="80px" class="q-mb-md" />
-        <div class="text-h5 text-weight-bold text-blue-grey-9 q-mb-sm">Success!</div>
+        <div class="text-h5 text-weight-bold text-dark q-mb-sm">Success!</div>
         <div class="text-subtitle1 text-grey-6 q-mb-lg">{{ successMsg }}</div>
         <q-btn color="primary" label="Back to Dashboard" unelevated class="full-width text-weight-bold" size="lg" style="border-radius: 8px;" @click="$router.push('/')" />
       </q-card>
@@ -33,7 +33,7 @@
       <div class="row items-center q-mb-lg">
         <q-btn icon="arrow_back" flat round color="grey-7" @click="$router.push('/')" class="q-mr-md" />
         <div>
-          <div class="text-h5 text-weight-bold text-blue-grey-9">Asset Hub</div>
+          <div class="text-h5 text-weight-bold text-dark">Asset Hub</div>
           <div class="text-caption text-grey-6">Smart Scanner</div>
         </div>
       </div>
@@ -49,7 +49,7 @@
           </div>
           <div class="col">
             <div class="text-caption text-grey-6 text-uppercase text-weight-bold tracking-wide">{{ asset?.category }}</div>
-            <div class="text-h6 text-weight-bold text-blue-grey-9" style="line-height: 1.2;">{{ asset?.name }}</div>
+            <div class="text-h6 text-weight-bold text-dark" style="line-height: 1.2;">{{ asset?.name }}</div>
             <div class="text-caption text-grey-7">Code: {{ asset?.id }}</div>
           </div>
           <div class="col-auto text-right">
@@ -142,7 +142,7 @@
 
         <!-- Timeline Card -->
         <q-card class="clean-card shadow-sm q-pa-md">
-          <div class="text-h6 text-weight-bold text-blue-grey-9 q-mb-md q-px-sm">Lifecycle History</div>
+          <div class="text-h6 text-weight-bold text-dark q-mb-md q-px-sm">Lifecycle History</div>
           
           <div v-if="auditLogs.length === 0" class="text-center q-pa-xl text-grey-6">
             <q-icon name="history" size="48px" class="q-mb-md opacity-50" />
@@ -159,7 +159,7 @@
               :icon="getActionIcon(log?.action)"
             >
               <div v-if="parseDescription(log?.description).chips.length > 0">
-                <div class="text-subtitle1 text-weight-medium text-blue-grey-9 q-mb-sm">{{ parseDescription(log?.description).main }}</div>
+                <div class="text-subtitle1 text-weight-medium text-dark q-mb-sm">{{ parseDescription(log?.description).main }}</div>
                 <div class="row q-gutter-sm q-mb-md">
                   <q-chip 
                     v-for="(chip, index) in parseDescription(log?.description).chips" 
@@ -175,7 +175,7 @@
                   </q-chip>
                 </div>
               </div>
-              <div v-else class="text-subtitle1 text-blue-grey-9 q-mb-md">{{ log?.description }}</div>
+              <div v-else class="text-subtitle1 text-dark q-mb-md">{{ log?.description }}</div>
               <div class="text-caption text-grey-6 flex items-center">
                 <q-icon name="person" class="q-mr-xs" size="16px" />
                 Logged by: <span class="text-weight-bold q-ml-xs text-primary">{{ log?.user }}</span>

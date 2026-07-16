@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg fade-in">
     <div class="row items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">Repair Hub</div>
+        <div class="text-h4 text-weight-bold text-dark">Repair Hub</div>
         <div class="text-subtitle1 text-grey-6">Track and manage hardware maintenance</div>
       </div>
     </div>
@@ -14,7 +14,7 @@
       <div class="col-12 col-xl-5 col-lg-6">
         <q-card class="clean-card shadow-sm">
           <q-card-section class="q-pb-none q-pt-lg q-px-lg">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="build" class="q-mr-sm text-red-6" size="28px" /> Send to Repair
             </div>
             <div class="text-caption text-grey-6 q-mt-xs">Submit an available or damaged asset for maintenance.</div>
@@ -116,7 +116,7 @@
       <div class="col-12 col-xl-7 col-lg-6">
         <q-card class="clean-card shadow-sm h-full">
           <q-card-section class="q-pb-none q-pt-lg q-px-lg">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="handyman" class="q-mr-sm text-info" size="28px" /> In Repair
             </div>
             <div class="text-caption text-grey-6 q-mt-xs">Hardware currently being serviced at vendors.</div>

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="row items-center justify-between q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">Asset Inventory</div>
+        <div class="text-h4 text-weight-bold text-dark">Asset Inventory</div>
         <div class="text-subtitle1 text-grey-6">Manage and track your IT hardware fleet</div>
       </div>
     </div>
@@ -51,7 +51,7 @@
     <!-- Main Table Card -->
     <q-card class="clean-card shadow-sm">
       <q-card-section class="q-pa-md row items-center justify-between">
-        <div class="text-h6 text-blue-grey-9 text-weight-bold">Hardware Catalog</div>
+        <div class="text-h6 text-dark text-weight-bold">Hardware Catalog</div>
         
         <div class="row q-gutter-sm items-center">
           <q-input outlined dense v-model="filter" placeholder="Search assets..." class="bg-white" style="width: 250px">
@@ -131,7 +131,7 @@
     <!-- Dialogs remain unchanged, but styled cleanly -->
     <q-dialog v-model="addDialog">
       <q-card style="width: 400px; max-width: 90vw;" class="clean-card">
-        <q-card-section class="bg-grey-1 text-blue-grey-9">
+        <q-card-section class="bg-transparent text-dark">
           <div class="text-h6 text-weight-bold">Add New Asset</div>
         </q-card-section>
         <q-card-section class="q-pt-lg">
@@ -157,7 +157,7 @@
 
     <q-dialog v-model="editDialog">
       <q-card style="width: 400px; max-width: 90vw;" class="clean-card">
-        <q-card-section class="bg-grey-1 text-blue-grey-9">
+        <q-card-section class="bg-transparent text-dark">
           <div class="text-h6 text-weight-bold">Edit Asset</div>
         </q-card-section>
         <q-card-section class="q-pt-lg">
@@ -183,7 +183,7 @@
 
     <q-dialog v-model="qrDialog">
       <q-card style="width: 450px; max-width: 95vw; border-radius: 12px" class="clean-card q-pa-md" id="qr-print-area">
-        <div class="text-h6 text-weight-bold q-mb-md text-blue-grey-9 text-center hide-on-print">Print Asset Label</div>
+        <div class="text-h6 text-weight-bold q-mb-md text-dark text-center hide-on-print">Print Asset Label</div>
         
         <!-- Printable Label -->
         <div class="row items-center bg-white q-pa-sm print-container" style="border: 2px solid #000; border-radius: 8px;">
@@ -210,7 +210,7 @@
     <q-dialog v-model="bulkPrintDialog" maximized transition-show="slide-up" transition-hide="slide-down">
       <q-card class="bg-white" id="bulk-print-area">
         <div class="row items-center justify-between q-pa-md hide-on-print bg-grey-2 shadow-2" style="position: sticky; top: 0; z-index: 10;">
-          <div class="text-h6 text-weight-bold text-blue-grey-9">Bulk Print Labels ({{ filteredAssets.length }} Items)</div>
+          <div class="text-h6 text-weight-bold text-dark">Bulk Print Labels ({{ filteredAssets.length }} Items)</div>
           <div>
             <q-btn flat color="grey-7" label="Cancel" v-close-popup class="q-mr-sm" />
             <q-btn color="primary" icon="print" label="Print All" @click="printQr" />

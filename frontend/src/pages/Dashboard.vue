@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg fade-in">
     <div class="row items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">Overview</div>
+        <div class="text-h4 text-weight-bold text-dark">Overview</div>
         <div class="text-subtitle1 text-grey-6">Welcome back to IAMS Enterprise</div>
       </div>
     </div>
@@ -14,9 +14,9 @@
           <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Total Asset</div>
-              <div class="text-h4 text-weight-bold q-mt-sm text-blue-grey-9">{{ store.totalAssets }}</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-dark">{{ store.totalAssets }}</div>
             </div>
-            <q-avatar color="blue-50" text-color="blue-700" icon="inventory_2" size="56px" class="shadow-1" />
+            <q-avatar color="orange-1" text-color="primary" icon="inventory_2" size="56px" class="shadow-1" />
           </q-card-section>
         </q-card>
       </div>
@@ -27,7 +27,7 @@
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Available</div>
               <div class="text-h4 text-weight-bold q-mt-sm text-green-7">{{ store.availableAssets }}</div>
             </div>
-            <q-avatar color="green-50" text-color="green-700" icon="check_circle" size="56px" class="shadow-1" />
+            <q-avatar color="grey-2" text-color="secondary" icon="check_circle" size="56px" class="shadow-1" />
           </q-card-section>
         </q-card>
       </div>
@@ -60,7 +60,7 @@
       <div class="col-12 col-md-6">
         <q-card class="clean-card shadow-sm h-full">
           <q-card-section>
-            <div class="text-h6 text-blue-grey-9 text-weight-bold">Assets by Status</div>
+            <div class="text-h6 text-dark text-weight-bold">Assets by Status</div>
           </q-card-section>
           <q-card-section class="flex flex-center">
             <VueApexCharts type="donut" width="100%" height="300" :options="donutOptions" :series="donutSeries" />
@@ -70,7 +70,7 @@
       <div class="col-12 col-md-6">
         <q-card class="clean-card shadow-sm h-full">
           <q-card-section>
-            <div class="text-h6 text-blue-grey-9 text-weight-bold">Financial Value by Category</div>
+            <div class="text-h6 text-dark text-weight-bold">Financial Value by Category</div>
           </q-card-section>
           <q-card-section>
             <VueApexCharts type="bar" width="100%" height="300" :options="barOptions" :series="barSeries" />
@@ -83,7 +83,7 @@
       <div class="col-12 col-md-8">
         <q-card class="clean-card h-full">
           <q-card-section class="row items-center justify-between q-pb-sm q-pt-md">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold">Recent Assets</div>
+            <div class="text-h6 text-dark text-weight-bold">Recent Assets</div>
             <q-input outlined dense v-model="search" placeholder="Search assets..." class="search-input bg-white">
               <template v-slot:prepend>
                 <q-icon name="search" color="grey-6" />
@@ -120,7 +120,7 @@
       <div class="col-12 col-md-4">
         <q-card class="clean-card h-full tilt-card" style="transform-style: preserve-3d;">
           <q-card-section class="q-pb-sm q-pt-md" style="transform: translateZ(20px);">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center" style="line-height: 1.5; padding-top: 4px;">
+            <div class="text-h6 text-dark text-weight-bold flex items-center" style="line-height: 1.5; padding-top: 4px;">
               <q-icon name="warning" color="warning" class="q-mr-sm" size="24px" /> Low Stock Alerts
             </div>
           </q-card-section>
@@ -128,7 +128,7 @@
             <q-list separator class="q-px-sm">
               <q-item v-for="item in lowStock" :key="item.name" class="q-py-md transition-all">
                 <q-item-section>
-                  <q-item-label class="text-weight-medium text-blue-grey-9">{{ item.name }}</q-item-label>
+                  <q-item-label class="text-weight-medium text-dark">{{ item.name }}</q-item-label>
                   <q-item-label caption>{{ item.category }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>

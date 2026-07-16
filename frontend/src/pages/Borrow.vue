@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg fade-in">
     <div class="row items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">Borrow / Return</div>
+        <div class="text-h4 text-weight-bold text-dark">Borrow / Return</div>
         <div class="text-subtitle1 text-grey-6">Advanced multi-item checkout system</div>
       </div>
     </div>
@@ -14,7 +14,7 @@
       <div class="col-12 col-xl-5 col-lg-6">
         <q-card class="clean-card shadow-sm">
           <q-card-section class="q-pb-none q-pt-lg q-px-lg">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="shopping_cart_checkout" class="q-mr-sm text-primary" size="28px" /> New Checkout
             </div>
             <div class="text-caption text-grey-6 q-mt-xs">Select an employee and add items to their cart.</div>
@@ -44,12 +44,12 @@
               
               <!-- Dynamic Cart Items -->
               <div>
-                <div class="text-subtitle1 text-weight-bold text-blue-grey-9 q-mb-md flex justify-between items-center">
+                <div class="text-subtitle1 text-weight-bold text-dark q-mb-md flex justify-between items-center">
                   <span>Cart Items ({{ form.items.length }})</span>
                   <q-btn type="button" flat dense icon="add_circle" color="primary" label="Add Item" @click.prevent="addItem" />
                 </div>
                 
-                <div v-for="(item, index) in form.items" :key="index" class="q-mb-md q-pa-md bg-grey-1 rounded-borders" style="border: 1px solid #e2e8f0;">
+                <div v-for="(item, index) in form.items" :key="index" class="q-mb-md q-pa-md bg-transparent rounded-borders" style="border: 1px solid #e2e8f0;">
                   <div class="row items-center justify-between q-mb-sm">
                     <div class="text-weight-bold text-grey-7">Item #{{ index + 1 }}</div>
                     <q-btn type="button" flat round dense icon="delete" color="negative" size="sm" @click.prevent="removeItem(index)" :disable="form.items.length === 1" />
@@ -108,7 +108,7 @@
       <div class="col-12 col-xl-7 col-lg-6">
         <q-card class="clean-card shadow-sm h-full">
           <q-card-section class="q-pb-none q-pt-lg q-px-lg">
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="inventory" class="q-mr-sm text-warning" size="28px" /> Active Borrows (Grouped)
             </div>
             <div class="text-caption text-grey-6 q-mt-xs">Checkouts are grouped by Employee and Date. Click any row to view full details.</div>
@@ -131,7 +131,7 @@
               
               <template v-slot:body-cell-item_count="props">
                 <q-td :props="props">
-                  <q-chip size="sm" color="blue-1" text-color="primary" class="text-weight-bold">
+                  <q-chip size="sm" color="orange-1" text-color="primary" class="text-weight-bold">
                     {{ props.row.items.length }} Item(s)
                   </q-chip>
                 </q-td>
@@ -151,8 +151,8 @@
     <!-- View Details Dialog -->
     <q-dialog v-model="detailsDialog">
       <q-card style="width: 500px; max-width: 90vw;" class="clean-card">
-        <q-card-section class="bg-grey-1 row items-center">
-          <div class="text-h6 text-blue-grey-9 text-weight-bold">Checkout Transaction Details</div>
+        <q-card-section class="bg-transparent row items-center">
+          <div class="text-h6 text-dark text-weight-bold">Checkout Transaction Details</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup color="grey-7" />
         </q-card-section>
@@ -177,7 +177,7 @@
             </div>
             <div class="col-12 q-mt-sm">
               <div class="text-caption text-grey-6">Notes / Reason</div>
-              <div class="text-weight-medium text-primary bg-blue-50 q-pa-sm rounded-borders">{{ selectedGroup.reason || 'No notes provided.' }}</div>
+              <div class="text-weight-medium text-primary bg-orange-1 q-pa-sm rounded-borders">{{ selectedGroup.reason || 'No notes provided.' }}</div>
             </div>
           </div>
           

@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg fade-in">
     <div class="row justify-between items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">Reports & Exports</div>
+        <div class="text-h4 text-weight-bold text-dark">Reports & Exports</div>
         <div class="text-subtitle1 text-grey-6">Download your data in Excel and PDF formats</div>
       </div>
     </div>
@@ -11,7 +11,7 @@
       <div class="col-12 col-md-6">
         <q-card class="clean-card">
           <q-card-section>
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="inventory" class="q-mr-sm text-primary" size="24px" /> Asset Inventory Report
             </div>
             <p class="text-grey-7 q-mt-sm">Export a complete list of all assets, their categories, values, and current status.</p>
@@ -26,7 +26,7 @@
       <div class="col-12 col-md-6">
         <q-card class="clean-card">
           <q-card-section>
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="swap_horiz" class="q-mr-sm text-primary" size="24px" /> Borrow History Report
             </div>
             <p class="text-grey-7 q-mt-sm">Export a comprehensive log of all hardware checkouts and returns.</p>
@@ -41,7 +41,7 @@
       <div class="col-12 col-md-12">
         <q-card class="clean-card">
           <q-card-section>
-            <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center">
+            <div class="text-h6 text-dark text-weight-bold flex items-center">
               <q-icon name="fact_check" class="q-mr-sm text-primary" size="24px" /> Stock Checklist
             </div>
             <p class="text-grey-7 q-mt-sm">Export a printable checklist grouped by category for warehouse auditing, including blank spaces for count and condition notes.</p>

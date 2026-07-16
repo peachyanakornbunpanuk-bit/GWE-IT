@@ -60,7 +60,7 @@
         <div v-for="(msg, index) in messages" :key="index" class="q-mb-md">
           <!-- AI Message -->
           <div v-if="msg.role === 'ai'" class="row items-start no-wrap q-mr-xl">
-            <q-avatar size="sm" color="blue-1" text-color="primary" class="q-mr-sm shadow-1 q-mt-xs" icon="smart_toy" />
+            <q-avatar size="sm" color="orange-1" text-color="primary" class="q-mr-sm shadow-1 q-mt-xs" icon="smart_toy" />
             <div class="q-pa-sm text-dark shadow-1" style="background: #F0F4F8; border-radius: 4px 16px 16px 16px; word-break: break-word; font-size: 14px; line-height: 1.4;">
               {{ msg.text }}
             </div>

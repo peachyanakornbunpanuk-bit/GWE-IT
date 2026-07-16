@@ -6,7 +6,7 @@
       <div class="hero-beam"></div>
     </div>
     
-    <q-header class="bg-transparent text-white" style="position: absolute; z-index: 10;">
+    <q-header class="bg-transparent text-white" style="position: absolute; z-index: 10; background: linear-gradient(180deg, rgba(30, 22, 16, 0.6) 0%, rgba(30, 22, 16, 0.3) 50%, transparent 100%); padding-bottom: 2rem;">
       <q-toolbar class="q-px-xl q-py-md">
         <q-toolbar-title class="flex items-center">
           <div class="brand-mark q-mr-sm"></div>
@@ -195,11 +195,12 @@ const handleLogin = async () => {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(250, 245, 236, 0.7);
+  color: rgba(250, 245, 236, 0.95);
   text-decoration: none;
   font-weight: 500;
   transition: color 400ms ease;
   position: relative;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 .nav-links a::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px;
@@ -211,13 +212,14 @@ const handleLogin = async () => {
 .nav-links a:hover::after { transform: scaleX(1); }
 
 .login-btn-top {
-  color: rgba(250, 245, 236, 0.8);
+  color: rgba(250, 245, 236, 0.95);
   font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
-  border-color: rgba(250, 245, 236, 0.3) !important;
+  border-color: rgba(250, 245, 236, 0.6) !important;
   transition: all 400ms ease;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 .login-btn-top:hover {
   background: #faf5ec !important;

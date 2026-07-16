@@ -19,7 +19,7 @@
           <q-badge color="negative" floating rounded v-if="notifStore.unreadCount > 0">{{ notifStore.unreadCount }}</q-badge>
           <q-menu fit anchor="bottom right" self="top right" style="min-width: 320px; max-height: 400px; overflow-y: auto;">
             <q-list class="q-py-sm">
-              <q-item-label header class="text-weight-bold text-blue-grey-9 row items-center justify-between">
+              <q-item-label header class="text-weight-bold text-dark row items-center justify-between">
                 <span>Alerts & Notifications</span>
                 <q-btn flat dense round icon="done_all" size="sm" @click="notifStore.markAllAsRead(authStore.user?.username || '', authStore.user?.role || '')" v-if="notifStore.unreadCount > 0">
                   <q-tooltip>Mark all as read</q-tooltip>
@@ -31,7 +31,7 @@
                   <q-icon :name="notif.icon" :color="notif.color" />
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label class="text-weight-medium text-blue-grey-9">{{ notif.title }}</q-item-label>
+                  <q-item-label class="text-weight-medium text-dark">{{ notif.title }}</q-item-label>
                   <q-item-label caption>{{ notif.message }}</q-item-label>
                   <q-item-label caption class="text-grey-5" style="font-size: 10px; margin-top: 2px;">{{ new Date(notif.timestamp).toLocaleString() }}</q-item-label>
                 </q-item-section>
@@ -137,10 +137,10 @@
             <div class="text-overline text-grey-6 q-mb-sm">Hardware Assets ({{ assetResults.length }})</div>
             <div class="row q-col-gutter-sm">
               <div v-for="res in assetResults" :key="res.id" class="col-12 col-sm-6">
-                <div class="q-pa-sm rounded-borders bg-grey-1 hover-shadow cursor-pointer transition-all flex items-center" style="border: 1px solid #e2e8f0;" @click="handleSearchClick(res.route)">
+                <div class="q-pa-sm rounded-borders bg-transparent hover-shadow cursor-pointer transition-all flex items-center" style="border: 1px solid #e2e8f0;" @click="handleSearchClick(res.route)">
                   <q-icon name="devices" color="primary" size="20px" class="q-mr-sm" />
                   <div>
-                    <div class="text-weight-bold text-blue-grey-9" style="font-size: 13px;">{{ res.title }}</div>
+                    <div class="text-weight-bold text-dark" style="font-size: 13px;">{{ res.title }}</div>
                     <div class="text-caption text-grey-6">{{ res.subtitle }}</div>
                   </div>
                 </div>
@@ -153,10 +153,10 @@
             <div class="text-overline text-grey-6 q-mb-sm">Employees ({{ employeeResults.length }})</div>
             <div class="row q-col-gutter-sm">
               <div v-for="res in employeeResults" :key="res.id" class="col-12 col-sm-6">
-                <div class="q-pa-sm rounded-borders bg-grey-1 hover-shadow cursor-pointer transition-all flex items-center" style="border: 1px solid #e2e8f0;" @click="handleSearchClick(res.route)">
+                <div class="q-pa-sm rounded-borders bg-transparent hover-shadow cursor-pointer transition-all flex items-center" style="border: 1px solid #e2e8f0;" @click="handleSearchClick(res.route)">
                   <q-icon name="person" color="secondary" size="20px" class="q-mr-sm" />
                   <div>
-                    <div class="text-weight-bold text-blue-grey-9" style="font-size: 13px;">{{ res.title }}</div>
+                    <div class="text-weight-bold text-dark" style="font-size: 13px;">{{ res.title }}</div>
                     <div class="text-caption text-grey-6">{{ res.subtitle }}</div>
                   </div>
                 </div>
@@ -172,7 +172,7 @@
       </q-card>
     </q-dialog>
 
-    <q-page-container class="bg-grey-1">
+    <q-page-container class="bg-transparent">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />

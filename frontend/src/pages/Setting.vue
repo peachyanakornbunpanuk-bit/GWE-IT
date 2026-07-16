@@ -2,7 +2,7 @@
   <q-page padding class="q-pa-lg fade-in">
     <div class="row justify-between items-center q-mb-lg">
       <div>
-        <div class="text-h4 text-weight-bold text-blue-grey-9">System Settings</div>
+        <div class="text-h4 text-weight-bold text-dark">System Settings</div>
         <div class="text-subtitle1 text-grey-6">Manage global application configurations</div>
       </div>
     </div>
@@ -11,7 +11,7 @@
       <q-tabs
         v-model="tab"
         dense
-        class="text-grey-7 bg-grey-1"
+        class="text-grey-7 bg-transparent"
         active-color="primary"
         indicator-color="primary"
         align="left"
@@ -25,7 +25,7 @@
 
       <q-separator />
 
-      <q-tab-panels v-model="tab" animated class="bg-white text-blue-grey-9">
+      <q-tab-panels v-model="tab" animated class="bg-white text-dark">
         
         <!-- Categories Tab -->
         <q-tab-panel name="categories" class="q-pa-lg">
