@@ -4,8 +4,11 @@
     <div class="hero-image">
       <div class="hero-veil"></div>
       <div class="hero-beam"></div>
+      <div 
+        class="interactive-fog" 
+        :style="{ transform: `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)` }"
+      ></div>
     </div>
-    <div ref="vantaRef" class="vanta-bg"></div>
     
     <q-header class="bg-transparent text-white fade-down" style="position: absolute; z-index: 10; background: linear-gradient(180deg, rgba(30, 22, 16, 0.35) 0%, rgba(30, 22, 16, 0.1) 60%, transparent 100%); padding-bottom: 0.5rem;">
       <q-toolbar class="q-px-xl q-py-sm">
@@ -112,11 +115,6 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from '../stores/authStore'
-import * as THREE from 'three'
-// @ts-ignore
-window.THREE = THREE
-// @ts-ignore
-import FOG from 'vanta/dist/vanta.fog.min'
 
 const username = ref('')
 const password = ref('')
@@ -143,40 +141,48 @@ const handleLogin = async () => {
   loading.value = false
 }
 
-const vantaRef = ref<HTMLElement | null>(null)
-let vantaEffect: any = null
+// Interactive Fog Logic
+const mouseX = ref(window.innerWidth / 2)
+const mouseY = ref(window.innerHeight / 2)
+const targetX = ref(window.innerWidth / 2)
+const targetY = ref(window.innerHeight / 2)
+let animationFrameId = 0
+
+const updateMouse = (e: MouseEvent) => {
+  targetX.value = e.clientX
+  targetY.value = e.clientY
+}
+
+const animate = () => {
+  mouseX.value += (targetX.value - mouseX.value) * 0.05
+  mouseY.value += (targetY.value - mouseY.value) * 0.05
+  animationFrameId = requestAnimationFrame(animate)
+}
 
 onMounted(() => {
-  vantaEffect = FOG({
-    el: vantaRef.value,
-    THREE: THREE,
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    highlightColor: 0xe3d5c1,
-    midtoneColor: 0xc9b89e,
-    lowlightColor: 0xb16a48,
-    baseColor: 0x000000,
-    blurFactor: 0.7,
-    speed: 1.5,
-    zoom: 1.0
-  })
+  window.addEventListener('mousemove', updateMouse)
+  animate()
 })
 
 onBeforeUnmount(() => {
-  if (vantaEffect) vantaEffect.destroy()
+  window.removeEventListener('mousemove', updateMouse)
+  cancelAnimationFrame(animationFrameId)
 })
 </script>
 
 <style scoped>
-.vanta-bg {
-  position: fixed; inset: 0;
-  z-index: -1;
-  mix-blend-mode: screen;
-  opacity: 0.6;
+.interactive-fog {
+  position: fixed;
+  top: 0; left: 0;
+  width: 150vw;
+  height: 150vw;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(227, 213, 193, 0.15) 0%, rgba(201, 184, 158, 0.05) 30%, transparent 60%);
+  filter: blur(40px);
   pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: screen;
+  will-change: transform;
 }
 .hero-image {
   position: fixed; inset: 0;
