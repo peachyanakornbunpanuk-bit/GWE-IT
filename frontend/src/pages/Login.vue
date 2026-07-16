@@ -3,10 +3,12 @@
     <div ref="vantaRef" class="fullscreen" style="z-index: -1;"></div>
     <q-page-container>
       <q-page class="row justify-center items-center window-height" style="background: transparent;">
-        <q-card class="shadow-3" style="width: 100%; max-width: 400px; border-radius: 12px;">
-          <q-card-section class="bg-primary text-white q-pa-lg text-center" style="border-radius: 12px 12px 0 0;">
-            <div class="text-h5 text-weight-bold">IAMS Enterprise</div>
-            <div class="text-subtitle2 q-mt-sm">IT Asset Management System</div>
+        <q-card class="clean-card shadow-10" style="width: 100%; max-width: 420px; border-radius: 16px;">
+          <q-card-section class="q-pa-xl text-center" style="border-radius: 16px 16px 0 0; background: rgba(5,5,5,0.4);">
+            <div class="column justify-center items-center">
+              <span style="font-family: 'Syncopate', sans-serif; letter-spacing: 2px; font-size: 1.5rem; font-weight: 800; color: #fff;">GREENWOOD</span>
+              <span class="text-primary q-mt-xs" style="letter-spacing: 4px; font-size: 0.7rem; text-transform: uppercase;">Entertainment</span>
+            </div>
           </q-card-section>
           
           <q-card-section class="q-pa-lg">
@@ -76,11 +78,11 @@ onMounted(() => {
   vantaEffect = NET({
     el: vantaRef.value,
     THREE: THREE,
-    color: 0x42A5F5,
-    backgroundColor: 0x0f172a, // Deep slate background
-    points: 15.00,
-    maxDistance: 25.00,
-    spacing: 20.00,
+    color: 0x00F0FF, // Neon Cyan
+    backgroundColor: 0x050505, // Deep black
+    points: 12.00,
+    maxDistance: 20.00,
+    spacing: 25.00,
     showDots: true
   })
 })

@@ -1,10 +1,13 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="bg-grey-1 text-blue-grey-10" v-if="authStore.isAuthenticated">
-    <q-header class="bg-white text-blue-grey-9" bordered>
+  <q-layout view="hHh Lpr lff" v-if="authStore.isAuthenticated">
+    <q-header class="bg-dark text-white shadow-2" style="border-bottom: 1px solid rgba(255,255,255,0.1)">
       <q-toolbar class="q-px-lg">
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="drawer = !drawer" color="primary" />
-        <q-toolbar-title class="text-weight-bold tracking-wide">
-          IAMS <span class="text-caption text-primary text-weight-bold">Enterprise</span>
+        <q-toolbar-title class="text-weight-bold flex items-center">
+          <div class="column q-ml-sm" style="line-height: 1.2">
+            <span style="letter-spacing: 2px; font-size: 1.1rem; font-weight: 800;">GREENWOOD</span>
+            <span class="text-caption text-primary" style="letter-spacing: 4px; font-size: 0.6rem; text-transform: uppercase;">Entertainment</span>
+          </div>
         </q-toolbar-title>
         <q-space />
         
@@ -56,8 +59,8 @@
       show-if-above
       :width="260"
       :breakpoint="768"
-      class="bg-white sidebar-drawer"
-      bordered
+      class="bg-dark sidebar-drawer"
+      style="border-right: 1px solid rgba(255,255,255,0.1)"
     >
       <q-scroll-area class="fit">
         <div class="q-pa-md text-overline text-grey-6">Main Menu</div>

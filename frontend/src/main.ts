@@ -27,16 +27,17 @@ app.use(router)
 app.use(Quasar, {
   plugins: { Notify, Dialog, Loading },
   config: {
+    dark: true,
     brand: {
-      primary: '#6366F1',
-      secondary: '#8B5CF6',
-      accent: '#EC4899',
-      dark: '#111827',
-      'dark-page': '#1F2937',
-      positive: '#10B981',
-      negative: '#EF4444',
-      info: '#3B82F6',
-      warning: '#F59E0B'
+      primary: '#00F0FF',   // Neon Cyan
+      secondary: '#BF00FF', // Neon Purple
+      accent: '#FF003C',    // Neon Pink/Red
+      dark: '#0A0A0A',
+      'dark-page': '#050505',
+      positive: '#00FF66',
+      negative: '#FF003C',
+      info: '#00F0FF',
+      warning: '#FFE600'
     }
   }
 })
