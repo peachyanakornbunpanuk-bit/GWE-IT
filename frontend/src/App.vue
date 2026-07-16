@@ -317,68 +317,23 @@ body {
 .clean-card {
   background: #ffffff;
   border-radius: 12px;
-  border: 1px solid #e2e8f0; 
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
-  transition: box-shadow 0.2s ease;
-}
-
-.clean-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
-}
-
-.q-table__card {
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03) !important;
-  border: 1px solid #e2e8f0;
-}
-
-.q-table th {
-  font-weight: 600 !important;
-  color: #64748b !important; 
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.75rem !important;
-  padding: 16px !important;
-  background-color: #f8fafc !important;
-}
-
-.q-table td {
-  padding: 16px !important;
-  color: #334155 !important;
-  font-weight: 500;
-}
-
-.sidebar-drawer {
-  border-right: 1px solid #e2e8f0 !important;
-}
-
 .nav-item {
   border-radius: 8px;
   margin: 2px 12px;
-  color: #64748b;
+  color: var(--ink-mute);
   transition: all 0.2s ease;
 }
 
 .nav-item:hover {
-  background: #f1f5f9; 
-  color: #334155;
+  background: rgba(244, 237, 224, 0.4); 
+  color: var(--ink);
 }
 
-.active-nav {
-  background: #eff6ff !important; 
-  color: #2563eb !important; 
-  font-weight: 600;
-}
-
-.active-nav .q-icon {
-  color: #2563eb !important;
-}
-
-.badge-soft-positive { background: #dcfce7 !important; color: #166534 !important; }
-.badge-soft-warning { background: #fef9c3 !important; color: #854d0e !important; }
-.badge-soft-negative { background: #fee2e2 !important; color: #991b1b !important; }
-.badge-soft-info { background: #dbeafe !important; color: #1e40af !important; }
-.badge-soft-grey { background: #f1f5f9 !important; color: #475569 !important; }
+.badge-soft-positive { background: rgba(93, 110, 90, 0.15) !important; color: var(--sage-deep) !important; }
+.badge-soft-warning { background: rgba(177, 106, 72, 0.15) !important; color: var(--terracotta-deep) !important; }
+.badge-soft-negative { background: rgba(212, 165, 160, 0.15) !important; color: var(--dusk-pink) !important; }
+.badge-soft-info { background: rgba(201, 184, 158, 0.15) !important; color: var(--sand-deep) !important; }
+.badge-soft-grey { background: rgba(44, 38, 32, 0.05) !important; color: var(--ink-mute) !important; }
 
 .fade-in {
   animation: fadeIn 0.4s ease-out forwards;
