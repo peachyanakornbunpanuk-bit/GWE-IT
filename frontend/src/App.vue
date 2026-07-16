@@ -304,19 +304,9 @@ const handleSearchClick = (route: string) => {
 </script>
 
 <style>
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f8fafc; 
-  color: #334155; 
-}
-
 .h-full {
   height: 100%;
 }
-
-.clean-card {
-  background: #ffffff;
-  border-radius: 12px;
 .nav-item {
   border-radius: 8px;
   margin: 2px 12px;
