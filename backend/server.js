@@ -759,11 +759,14 @@ const searchAssetsTool = {
   }
 };
 
-const aiModel = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash",
-  tools: [{ functionDeclarations: [searchAssetsTool] }],
-  systemInstruction: "You are the IAMS IT Assistant. You help employees check inventory. Use the search_assets tool to check the database when asked about equipment. RULES: 1. You MUST respond ONLY in Thai. 2. Keep your answers EXTREMELY concise and short (1-2 sentences max). 3. Do not add conversational filler. 4. VERY IMPORTANT: When counting items, you MUST SUM the 'qty' field from the tool response (do NOT just count the number of rows)."
-});
+const fallbackModels = [
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+  "gemini-flash-latest"
+];
+
+let workingModelIndex = 0;
 
 app.post('/api/chat', authenticateToken, async (req, res) => {
     try {
@@ -777,8 +780,34 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
             formattedHistory.shift();
         }
         
-        const chat = aiModel.startChat({ history: formattedHistory });
-        const result = await chat.sendMessage(message);
+        let result = null;
+        let chat = null;
+        
+        for (let i = workingModelIndex; i < fallbackModels.length; i++) {
+            try {
+                const aiModel = genAI.getGenerativeModel({
+                  model: fallbackModels[i],
+                  tools: [{ functionDeclarations: [searchAssetsTool] }],
+                  systemInstruction: "You are the IAMS IT Assistant. You help employees check inventory. Use the search_assets tool to check the database when asked about equipment. RULES: 1. You MUST respond ONLY in Thai. 2. Keep your answers EXTREMELY concise and short (1-2 sentences max). 3. Do not add conversational filler. 4. VERY IMPORTANT: When counting items, you MUST SUM the 'qty' field from the tool response (do NOT just count the number of rows)."
+                });
+                
+                chat = aiModel.startChat({ history: formattedHistory });
+                result = await chat.sendMessage(message);
+                
+                workingModelIndex = i; // Save the working model for next time
+                break;
+            } catch (err) {
+                if (err.message && (err.message.includes("404") || err.message.includes("not found"))) {
+                    console.warn(`Model ${fallbackModels[i]} failed. Trying next...`);
+                    continue;
+                }
+                throw err;
+            }
+        }
+        
+        if (!result) {
+            throw new Error("All fallback models failed to respond.");
+        }
         
         const call = result.response.functionCalls()?.[0];
         if (call && call.name === "search_assets") {
