@@ -181,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAssetStore } from './stores/assetStore'
 import { useTransactionStore } from './stores/transactionStore'
@@ -204,6 +204,7 @@ const authStore = useAuthStore()
 const notifStore = useNotificationStore()
 
 const handleLogout = () => {
+  notifStore.stopPolling()
   authStore.logout()
   router.push('/login')
 }
@@ -225,7 +226,21 @@ const handleNetworkReconnect = async () => {
 }
 
 onMounted(async () => {
-  // Ensure global stores are loaded for notifications and search
+  if (authStore.isAuthenticated) {
+    initializeStores()
+  }
+  window.addEventListener('online', handleNetworkReconnect)
+})
+
+watch(() => authStore.isAuthenticated, (newVal) => {
+  if (newVal) {
+    initializeStores()
+  } else {
+    notifStore.stopPolling()
+  }
+})
+
+const initializeStores = async () => {
   await Promise.all([
     assetStore.fetchAssets(),
     txStore.fetchAllTransactions(),
@@ -235,9 +250,7 @@ onMounted(async () => {
   if (authStore.user) {
     notifStore.startPolling(authStore.user.username, authStore.user.role)
   }
-  
-  window.addEventListener('online', handleNetworkReconnect)
-})
+}
 
 onUnmounted(() => {
   notifStore.stopPolling()
