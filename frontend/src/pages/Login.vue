@@ -114,6 +114,8 @@ import { useQuasar } from 'quasar'
 import { useAuthStore } from '../stores/authStore'
 import * as THREE from 'three'
 // @ts-ignore
+window.THREE = THREE
+// @ts-ignore
 import FOG from 'vanta/dist/vanta.fog.min'
 
 const username = ref('')
