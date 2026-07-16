@@ -751,7 +751,6 @@ app.post('/api/purchase', (req, res) => {
 });
 
 // --- AI Chatbot Endpoint ---
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const searchAssetsTool = {
   name: "search_assets",
   description: "Searches the IT asset database by category or status to answer user questions about inventory. Returns counts of items.",
@@ -842,7 +841,7 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
 // Serve Vue Frontend
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-app.get('*', (req, res) => {
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
