@@ -156,9 +156,9 @@ onMounted(() => {
     highlightColor: 0xe3d5c1,
     midtoneColor: 0xc9b89e,
     lowlightColor: 0xb16a48,
-    baseColor: 0x4a4036,
+    baseColor: 0x000000,
     blurFactor: 0.7,
-    speed: 1.2,
+    speed: 1.5,
     zoom: 1.0
   })
 })
@@ -170,10 +170,10 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .vanta-bg {
-  position: absolute; inset: 0;
+  position: fixed; inset: 0;
   z-index: -1;
-  mix-blend-mode: soft-light;
-  opacity: 0.8;
+  mix-blend-mode: screen;
+  opacity: 0.6;
   pointer-events: none;
 }
 .hero-image {
