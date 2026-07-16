@@ -19,15 +19,32 @@
     <!-- Chat Window -->
     <q-card
       v-else
-      class="fixed-bottom-right shadow-24 flex column"
-      style="width: 380px; height: 550px; margin: 24px; z-index: 2000; border-radius: 20px; overflow: hidden; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);"
+      class="shadow-24 flex column"
+      :style="{
+        position: 'fixed',
+        right: '24px',
+        bottom: '24px',
+        width: '380px',
+        height: '550px',
+        zIndex: 2000,
+        borderRadius: '20px',
+        overflow: 'hidden',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(12px)',
+        transform: `translate(${panX}px, ${panY}px)`,
+        transition: isPanning ? 'none' : 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+      }"
     >
       <!-- Modern Header -->
-      <q-card-section class="text-white row items-center justify-between q-py-md q-px-lg" style="background: linear-gradient(135deg, #1976D2 0%, #42A5F5 100%);">
+      <q-card-section 
+        v-touch-pan.prevent.mouse="handlePan"
+        class="text-white row items-center justify-between q-py-md q-px-lg cursor-pointer" 
+        style="background: linear-gradient(135deg, #1976D2 0%, #42A5F5 100%);"
+      >
         <div class="text-h6 flex items-center text-weight-bold" style="letter-spacing: 0.5px;">
           <q-icon name="smart_toy" size="sm" class="q-mr-sm" /> IT Assistant
         </div>
-        <q-btn icon="close" flat round dense @click="isOpen = false" style="background: rgba(255,255,255,0.2); border-radius: 50%;" />
+        <q-btn icon="close" flat round dense @click="isOpen = false; panX = 0; panY = 0;" style="background: rgba(255,255,255,0.2); border-radius: 50%;" />
       </q-card-section>
 
       <q-card-section class="col overflow-auto q-pa-md bg-transparent" ref="chatScroll">
@@ -106,6 +123,21 @@ const isLoading = ref(false)
 const chatScroll = ref<any>(null)
 const authStore = useAuthStore()
 const API_URL = import.meta.env.VITE_API_URL || '/api'
+
+const panX = ref(0)
+const panY = ref(0)
+const isPanning = ref(false)
+
+const handlePan = (ev: any) => {
+  if (ev.isFirst) {
+    isPanning.value = true
+  }
+  panX.value += ev.delta.x
+  panY.value += ev.delta.y
+  if (ev.isFinal) {
+    isPanning.value = false
+  }
+}
 
 interface Message {
   role: 'user' | 'ai'

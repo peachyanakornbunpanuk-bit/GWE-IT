@@ -59,6 +59,17 @@
                     :rules="[val => !!val || 'Vendor is strictly required for auditing']"
                   />
                 </div>
+
+                <div class="col-12 col-sm-6">
+                  <q-input 
+                    outlined 
+                    v-model="form.repair_date" 
+                    type="date" 
+                    label="Repair Date *" 
+                    required
+                    :rules="[val => !!val || 'Repair date is required']"
+                  />
+                </div>
                 
                 <div class="col-12 col-sm-6">
                   <q-input 
@@ -126,6 +137,12 @@
                 </q-td>
               </template>
               
+              <template v-slot:body-cell-repair_date="props">
+                <q-td :props="props">
+                  {{ props.row.repair_date || 'N/A' }}
+                </q-td>
+              </template>
+
               <template v-slot:body-cell-cost="props">
                 <q-td :props="props" class="text-weight-bold">
                   ฿{{ props.row.cost.toLocaleString() }}
@@ -160,7 +177,8 @@ const settingStore = useSettingStore()
 const repairForm = ref(null)
 
 // Form state
-const form = ref({ category: '', asset_id: '', issue: '', vendor: '', cost: '' as any })
+const today = new Date().toISOString().split('T')[0]
+const form = ref({ category: '', asset_id: '', issue: '', vendor: '', repair_date: today, cost: '' as any })
 
 onMounted(() => {
   txStore.fetchAllTransactions()
@@ -192,20 +210,16 @@ const columns = [
   { name: 'asset_name', label: 'Item in Repair', field: 'asset_id', align: 'left', sortable: true },
   { name: 'issue', label: 'Issue', field: 'issue', align: 'left' },
   { name: 'vendor', label: 'Vendor', field: 'vendor', align: 'left', sortable: true },
+  { name: 'repair_date', label: 'Sent Date', field: 'repair_date', align: 'left', sortable: true },
   { name: 'cost', label: 'Cost Est.', field: 'cost', align: 'left', sortable: true },
   { name: 'actions', label: 'Action', field: 'actions', align: 'right' }
 ] as any
 
 const onRepair = async () => {
-  await txStore.sendToRepair(form.value.asset_id, form.value.issue, form.value.vendor, form.value.cost || 0)
-  $q.notify({ color: 'negative', message: 'Asset sent to repair', position: 'top-right' })
+  await txStore.sendToRepair(form.value.asset_id, form.value.issue, form.value.vendor, form.value.cost || 0, form.value.repair_date)
+  $q.notify({ color: 'positive', message: 'Asset sent to repair!', position: 'top' })
   
-  // Explicitly resetting fields one by one to ensure reactivity
-  form.value.category = ''
-  form.value.asset_id = ''
-  form.value.issue = ''
-  form.value.vendor = ''
-  form.value.cost = ''
+  form.value = { category: '', asset_id: '', issue: '', vendor: '', repair_date: today, cost: '' }
   
   if (repairForm.value) {
     (repairForm.value as any).resetValidation()

@@ -64,6 +64,7 @@ const db = new sqlite3.Database(url, (err) => {
                     issue TEXT NOT NULL,
                     vendor TEXT,
                     cost REAL,
+                    repair_date TEXT,
                     status TEXT NOT NULL
                 )
             `);

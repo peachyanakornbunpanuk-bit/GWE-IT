@@ -71,7 +71,7 @@
                       <q-select 
                         outlined dense 
                         v-model="item.asset_id" 
-                        :options="getAvailableAssets(item.category)" 
+                        :options="getAvailableAssets(item.category, index)" 
                         label="Select Asset" 
                         emit-value map-options 
                         required 
@@ -82,7 +82,7 @@
                   </div>
                   
                   <!-- Out of Stock Alert -->
-                  <div v-if="item.category && getAvailableAssets(item.category).length === 0" class="q-mt-sm q-pa-sm bg-red-1 text-negative rounded-borders flex items-center">
+                  <div v-if="item.category && getAvailableAssets(item.category, index).length === 0" class="q-mt-sm q-pa-sm bg-red-1 text-negative rounded-borders flex items-center">
                     <q-icon name="error_outline" size="20px" class="q-mr-sm" />
                     <strong>Out of Stock:</strong> No items available in this category.
                   </div>
@@ -253,9 +253,13 @@ const categories = computed(() => {
   return [...new Set(cats)]
 })
 
-const getAvailableAssets = (category: string) => {
+const getAvailableAssets = (category: string, currentIndex: number) => {
+  const selectedIds = form.value.items
+    .map((item, idx) => idx !== currentIndex ? item.asset_id : null)
+    .filter(id => id)
+
   return assetStore.assets
-    .filter(a => a.status === 'Available' && a.category === category)
+    .filter(a => a.status === 'Available' && a.category === category && !selectedIds.includes(a.id))
     .map(a => ({ label: `${a.id} - ${a.name}`, value: a.id }))
 }
 
@@ -272,14 +276,15 @@ const isCartInvalid = computed(() => {
   if (!form.value.items[0].asset_id) return true;
   
   const selectedIds = new Set();
-  for (const item of form.value.items) {
+  for (let index = 0; index < form.value.items.length; index++) {
+    const item = form.value.items[index];
     if (!item.asset_id) return true;
     
     // Block duplicate selections
     if (selectedIds.has(item.asset_id)) return true;
     selectedIds.add(item.asset_id);
     
-    if (getAvailableAssets(item.category).length === 0) return true;
+    if (getAvailableAssets(item.category, index).length === 0) return true;
   }
   return false;
 })

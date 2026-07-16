@@ -46,9 +46,9 @@ export const useTransactionStore = defineStore('transaction', {
       useAssetStore().fetchAssets()
     },
 
-    async sendToRepair(asset_id: string, issue: string, vendor: string, cost: number) {
+    async sendToRepair(asset_id: string, issue: string, vendor: string, cost: number, repair_date: string) {
       await axios.post(`${API_URL}/repair`, {
-        asset_id, issue, vendor, cost
+        asset_id, issue, vendor, cost, repair_date
       })
       await this.fetchAllTransactions()
       useAssetStore().fetchAssets()

@@ -660,9 +660,9 @@ app.get('/api/repair', (req, res) => {
 });
 
 app.post('/api/repair', (req, res) => {
-    const { asset_id, issue, vendor, cost, user } = req.body;
+    const { asset_id, issue, vendor, cost, repair_date, user } = req.body;
     db.serialize(() => {
-        db.run(`INSERT INTO repair_records (asset_id, issue, vendor, cost, status) VALUES (?, ?, ?, ?, 'In Repair')`, [asset_id, issue, vendor, cost]);
+        db.run(`INSERT INTO repair_records (asset_id, issue, vendor, cost, repair_date, status) VALUES (?, ?, ?, ?, ?, 'In Repair')`, [asset_id, issue, vendor, cost, repair_date]);
         db.run(`UPDATE assets SET status = 'Repair' WHERE id = ?`, [asset_id], function(err) {
             logAudit(asset_id, 'SENT_TO_REPAIR', `Issue: ${issue}. Vendor: ${vendor}. Estimated Cost: ${cost}`, user);
             createNotification('GLOBAL_IT', 'Asset in Repair', `Asset ${asset_id} sent to ${vendor}`, `/repair`, 'build', 'negative');
