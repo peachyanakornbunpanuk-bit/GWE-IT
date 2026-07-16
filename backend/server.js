@@ -805,6 +805,13 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
     }
 });
 
+// Serve Vue Frontend
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`IAMS Backend listening at http://0.0.0.0:${port}`);
 });
