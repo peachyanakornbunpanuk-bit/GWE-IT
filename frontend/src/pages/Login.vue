@@ -6,9 +6,9 @@
       <div class="hero-beam"></div>
     </div>
     
-    <q-header class="bg-transparent text-white" style="position: absolute; z-index: 10; background: linear-gradient(180deg, rgba(30, 22, 16, 0.6) 0%, rgba(30, 22, 16, 0.3) 50%, transparent 100%); padding-bottom: 2rem;">
-      <q-toolbar class="q-px-xl q-py-md">
-        <q-toolbar-title class="flex items-center">
+    <q-header class="bg-transparent text-white fade-down" style="position: absolute; z-index: 10; background: linear-gradient(180deg, rgba(30, 22, 16, 0.35) 0%, rgba(30, 22, 16, 0.1) 60%, transparent 100%); padding-bottom: 0.5rem;">
+      <q-toolbar class="q-px-xl q-py-sm">
+        <q-toolbar-title class="flex items-center stagger-item">
           <div class="brand-mark q-mr-sm"></div>
           <span style="font-family: 'Fraunces', serif; letter-spacing: 0.01em; font-size: 1.15rem; font-weight: 400;">IAMS</span>
         </q-toolbar-title>
@@ -16,9 +16,9 @@
         <q-space />
         
         <div class="nav-links gt-sm">
-          <span class="cursor-pointer" @click="loginDialog = true">Asset Tracking</span>
-          <span class="cursor-pointer" @click="loginDialog = true">Inventory</span>
-          <span class="cursor-pointer" @click="loginDialog = true">Maintenance</span>
+          <span class="cursor-pointer stagger-item delay-1" @click="loginDialog = true">Asset Tracking</span>
+          <span class="cursor-pointer stagger-item delay-2" @click="loginDialog = true">Inventory</span>
+          <span class="cursor-pointer stagger-item delay-3" @click="loginDialog = true">Maintenance</span>
         </div>
         
         <q-space />
@@ -26,7 +26,7 @@
         <q-btn 
           outline
           rounded
-          class="login-btn-top"
+          class="login-btn-top stagger-item delay-4"
           label="Enter Portal" 
           @click="loginDialog = true"
         />
@@ -285,11 +285,28 @@ const handleLogin = async () => {
   transform: translateY(30px);
   animation: fadeUp 1s cubic-bezier(.22, 1, .36, 1) forwards;
 }
+.fade-down {
+  opacity: 0;
+  transform: translateY(-30px);
+  animation: fadeDown 1.2s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+.stagger-item {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
 .delay-1 { animation-delay: 200ms; }
 .delay-2 { animation-delay: 400ms; }
 .delay-3 { animation-delay: 600ms; }
+.delay-4 { animation-delay: 800ms; }
 
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
 }
 </style>
