@@ -1,13 +1,14 @@
 <template>
   <q-layout view="hHh Lpr lff">
-    <div ref="vantaRef" class="fullscreen" style="z-index: -1;"></div>
+    <div class="grain"></div>
+    <div class="fullscreen login-bg" style="z-index: -1;"></div>
     <q-page-container>
       <q-page class="row justify-center items-center window-height" style="background: transparent;">
-        <q-card class="clean-card shadow-10" style="width: 100%; max-width: 420px; border-radius: 16px;">
-          <q-card-section class="q-pa-xl text-center" style="border-radius: 16px 16px 0 0; background: rgba(5,5,5,0.4);">
+        <q-card class="clean-card shadow-4" style="width: 100%; max-width: 420px; border-radius: 8px;">
+          <q-card-section class="q-pa-xl text-center" style="border-radius: 8px 8px 0 0; border-bottom: 1px solid var(--line-soft);">
             <div class="column justify-center items-center">
-              <span style="font-family: 'Syncopate', sans-serif; letter-spacing: 2px; font-size: 1.5rem; font-weight: 800; color: #fff;">GREENWOOD</span>
-              <span class="text-primary q-mt-xs" style="letter-spacing: 4px; font-size: 0.7rem; text-transform: uppercase;">Entertainment</span>
+              <span style="font-family: 'Fraunces', serif; letter-spacing: 0.02em; font-size: 1.7rem; font-weight: 400; color: var(--ink);">IAMS</span>
+              <span class="text-primary q-mt-xs" style="font-family: 'Fraunces', serif; font-style: italic; letter-spacing: 0.05em; font-size: 0.9rem;">Enterprise</span>
             </div>
           </q-card-section>
           
@@ -63,33 +64,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from '../stores/authStore'
-import * as THREE from 'three'
-// @ts-ignore
-import NET from 'vanta/dist/vanta.net.min'
-
-const vantaRef = ref(null)
-let vantaEffect: any = null
-
-onMounted(() => {
-  vantaEffect = NET({
-    el: vantaRef.value,
-    THREE: THREE,
-    color: 0x00F0FF, // Neon Cyan
-    backgroundColor: 0x050505, // Deep black
-    points: 12.00,
-    maxDistance: 20.00,
-    spacing: 25.00,
-    showDots: true
-  })
-})
-
-onBeforeUnmount(() => {
-  if (vantaEffect) vantaEffect.destroy()
-})
 
 const username = ref('')
 const password = ref('')
@@ -115,3 +93,16 @@ const handleLogin = async () => {
   loading.value = false
 }
 </script>
+
+<style scoped>
+.login-bg {
+  background: radial-gradient(ellipse at 50% 60%, rgba(177, 106, 72, 0.15) 0%, rgba(244, 237, 224, 0.8) 70%, var(--cream) 100%),
+              linear-gradient(180deg, rgba(227, 213, 193, 0.45) 0%, var(--cream) 100%);
+  animation: login-breath 12s ease-in-out infinite alternate;
+}
+
+@keyframes login-breath {
+  0%   { background-position: 0% 50%; opacity: 0.8; }
+  100% { background-position: 100% 50%; opacity: 1; }
+}
+</style>

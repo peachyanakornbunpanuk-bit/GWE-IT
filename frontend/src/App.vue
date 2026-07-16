@@ -1,12 +1,13 @@
 <template>
+  <div class="grain"></div>
   <q-layout view="hHh Lpr lff" v-if="authStore.isAuthenticated">
-    <q-header class="bg-dark text-white shadow-2" style="border-bottom: 1px solid rgba(255,255,255,0.1)">
+    <q-header class="text-ink shadow-1" style="background: rgba(244, 237, 224, 0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line-soft);">
       <q-toolbar class="q-px-lg">
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="drawer = !drawer" color="primary" />
         <q-toolbar-title class="text-weight-bold flex items-center">
           <div class="column q-ml-sm" style="line-height: 1.2">
-            <span style="letter-spacing: 2px; font-size: 1.1rem; font-weight: 800;">GREENWOOD</span>
-            <span class="text-caption text-primary" style="letter-spacing: 4px; font-size: 0.6rem; text-transform: uppercase;">Entertainment</span>
+            <span style="font-family: 'Fraunces', serif; letter-spacing: 0.02em; font-size: 1.25rem; font-weight: 400; color: var(--ink);">IAMS</span>
+            <span class="text-caption text-primary" style="font-family: 'Fraunces', serif; font-style: italic; letter-spacing: 0.05em; font-size: 0.8rem; font-weight: 300;">Enterprise</span>
           </div>
         </q-toolbar-title>
         <q-space />
@@ -59,8 +60,8 @@
       show-if-above
       :width="260"
       :breakpoint="768"
-      class="bg-dark sidebar-drawer"
-      style="border-right: 1px solid rgba(255,255,255,0.1)"
+      class="sidebar-drawer"
+      style="background: var(--cream-soft); border-right: 1px solid var(--line-soft);"
     >
       <q-scroll-area class="fit">
         <div class="q-pa-md text-overline text-grey-6">Main Menu</div>
