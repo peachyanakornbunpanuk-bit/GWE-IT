@@ -13,7 +13,7 @@ export interface Notification {
   color: string
 }
 
-const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000/api`
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({

@@ -150,7 +150,7 @@ import VueApexCharts from 'vue3-apexcharts'
 import axios from 'axios'
 import type { ApexOptions } from 'apexcharts'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3000/api'
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 const store = useAssetStore()
 const search = ref('')
 

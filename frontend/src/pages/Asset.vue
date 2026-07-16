@@ -252,7 +252,7 @@ const $q = useQuasar()
 const store = useAssetStore()
 const settingStore = useSettingStore()
 const authStore = useAuthStore()
-const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000/api`
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 const backendBaseUrl = API_URL.replace(/\/api$/, '')
 
 const filter = ref('')

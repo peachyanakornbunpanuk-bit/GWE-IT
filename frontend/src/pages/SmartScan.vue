@@ -202,7 +202,7 @@ const authStore = useAuthStore()
 const employeeStore = useEmployeeStore()
 const $q = useQuasar()
 
-const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000/api`
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 const backendBaseUrl = API_URL.replace(/\/api$/, '')
 const assetId = route.params.id as string
 

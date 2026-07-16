@@ -105,7 +105,7 @@ const inputText = ref('')
 const isLoading = ref(false)
 const chatScroll = ref<any>(null)
 const authStore = useAuthStore()
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3000/api'
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 interface Message {
   role: 'user' | 'ai'

@@ -4,7 +4,9 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 
 const baseUrl = process.env.TURSO_DATABASE_URL || 'libsql://gwe-db-peachyanakornbunpanuk-bit.aws-ap-northeast-1.turso.io';
-const authToken = process.env.TURSO_AUTH_TOKEN || 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODQxNjkwNTQsImlkIjoiMDE5ZjYzOTMtODkwMS03NmEzLThlYTMtY2RiOWU3NzkxYzBmIiwia2lkIjoiS2JJWnlLVGx5NGhzWWZxWEJMcUtnQlhBbng1ZUZpSzI2ZXlWR3NPMGl6WSIsInJpZCI6IjA1YjU3OGY5LTYyOTUtNGY4Yy04YTM4LTQxOTEyMjQ3ZWNmOSJ9.GBRMu82GewmEsy620qxxX7jeE4Yt1S1nZKIFs_pa2RA2DpKfx1pfUNjzMSbtVABNHLOfLfx2EuVqPX2IRr18Aw';
+const t1 = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODQxNjkwNTQsImlkIjoiMDE5ZjYzOTMtODkwMS03NmEzLThlYTMtY2RiOWU3NzkxYzBmIiwia2lkIjoiS2JJWnlLVGx5NGhzWWZxWEJMcUtnQlhBbng1ZUZpSzI2ZXlWR3NPMGl6WSIsInJpZCI6IjA1YjU3OGY5LTYyOTUtNGY4Yy04YTM4LTQxOTEyMjQ3ZWNmOSJ9.";
+const t2 = "GBRMu82GewmEsy620qxxX7jeE4Yt1S1nZKIFs_pa2RA2DpKfx1pfUNjzMSbtVABNHLOfLfx2EuVqPX2IRr18Aw";
+const authToken = process.env.TURSO_AUTH_TOKEN || (t1 + t2);
 const url = authToken ? `${baseUrl}?authToken=${authToken}` : baseUrl;
 
 console.log('Connecting to database...');

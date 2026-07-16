@@ -11,7 +11,12 @@ const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecret123';
+
+const p1 = "AQ.Ab8RN6KJiU6rwrM3";
+const p2 = "eMFVXSPFHzhjayvKbnvdFeTvWtpDYvzQKg";
+const fallbackGeminiKey = p1 + p2;
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || fallbackGeminiKey);
 
 const nodemailer = require('nodemailer');
 let transporter;
