@@ -53,13 +53,9 @@
             <div class="text-caption text-grey-7">Code: {{ asset?.id }}</div>
           </div>
           <div class="col-auto text-right">
-            <q-chip 
-              class="text-weight-bold q-ma-none shadow-1" 
-              :color="asset?.status === 'Available' ? 'green-1' : (asset?.status === 'Borrowed' ? 'orange-1' : 'red-1')"
-              :text-color="asset?.status === 'Available' ? 'green-8' : (asset?.status === 'Borrowed' ? 'orange-8' : 'red-8')"
-            >
+            <span class="status-badge" :class="'status-' + asset?.status?.toLowerCase().replace(' ', '')">
               {{ asset?.status }}
-            </q-chip>
+            </span>
             <div class="text-caption text-grey-6 q-mt-xs" v-if="asset?.holder && asset?.holder !== '-'">Holder: {{ asset?.holder }}</div>
           </div>
         </div>

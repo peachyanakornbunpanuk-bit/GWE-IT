@@ -131,9 +131,9 @@
               
               <template v-slot:body-cell-item_count="props">
                 <q-td :props="props">
-                  <q-chip size="sm" color="orange-1" text-color="primary" class="text-weight-bold">
+                  <span class="status-badge status-default q-px-sm">
                     {{ props.row.items.length }} Item(s)
-                  </q-chip>
+                  </span>
                 </q-td>
               </template>
 

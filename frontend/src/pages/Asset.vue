@@ -81,14 +81,9 @@
       >
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
-            <q-chip 
-              size="sm" 
-              class="text-weight-bold" 
-              :color="props.row.status === 'Available' ? 'green-1' : (props.row.status === 'Borrowed' ? 'orange-1' : 'red-1')"
-              :text-color="props.row.status === 'Available' ? 'green-8' : (props.row.status === 'Borrowed' ? 'orange-8' : 'red-8')"
-            >
+            <span class="status-badge" :class="'status-' + props.row.status.toLowerCase().replace(' ', '')">
               {{ props.row.status }}
-            </q-chip>
+            </span>
           </q-td>
         </template>
         

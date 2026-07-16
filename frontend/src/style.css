@@ -77,8 +77,27 @@ h1, h2, h3, h4, h5, h6, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-
 }
 
 .q-table td {
-  color: var(--ink-soft) !important;
+  color: var(--ink) !important;
+  font-size: 13px !important;
+  font-weight: 500;
 }
+
+/* Standardized Status Badges */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.status-available, .status-completed { background: rgba(93, 110, 90, 0.15) !important; color: var(--sage-deep) !important; }
+.status-borrowed, .status-active { background: rgba(177, 106, 72, 0.15) !important; color: var(--terracotta-deep) !important; }
+.status-damaged, .status-outofstock { background: rgba(212, 165, 160, 0.15) !important; color: var(--dusk-pink) !important; }
+.status-repair, .status-inrepair { background: rgba(201, 184, 158, 0.15) !important; color: var(--sand-deep) !important; }
+.status-default { background: rgba(44, 38, 32, 0.05) !important; color: var(--ink-mute) !important; }
 
 .q-drawer {
   background: var(--cream-soft) !important;

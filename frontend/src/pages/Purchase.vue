@@ -146,9 +146,9 @@
               <template v-slot:body-cell-item_name="props">
                 <q-td :props="props" class="text-weight-bold text-primary">
                   {{ props.row.item_name }}
-                  <q-chip v-if="props.row.quantity > 1" size="sm" color="orange-1" class="text-weight-bold text-primary q-ml-sm">
+                  <span v-if="props.row.quantity > 1" class="status-badge status-default q-ml-sm q-px-sm">
                     x{{ props.row.quantity }}
-                  </q-chip>
+                  </span>
                   <div class="text-caption text-grey-6">{{ props.row.category }}</div>
                 </q-td>
               </template>

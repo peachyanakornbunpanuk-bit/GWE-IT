@@ -101,15 +101,9 @@
           >
             <template v-slot:body-cell-status="props">
               <q-td :props="props">
-                <q-chip
-                  :class="getBadgeClass(props.row.status)"
-                  dense
-                  square
-                  class="text-weight-bold q-px-sm"
-                  style="border-radius: 6px;"
-                >
+                <span class="status-badge" :class="'status-' + props.row.status.toLowerCase().replace(' ', '')">
                   {{ props.row.status }}
-                </q-chip>
+                </span>
               </q-td>
             </template>
           </q-table>
@@ -132,13 +126,13 @@
                   <q-item-label caption>{{ item.category }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
-                  <q-chip v-if="item.qty === 0" color="red-6" text-color="white" dense class="text-weight-bold shadow-1" style="border-radius: 6px;">
-                    Out of Stock
-                  </q-chip>
-                  <q-chip v-else color="warning" text-color="dark" dense class="text-weight-bold shadow-1" style="border-radius: 6px;">
-                    {{ item.qty }} Left
-                  </q-chip>
-                </q-item-section>
+                <span v-if="item.qty === 0" class="status-badge status-outofstock q-px-sm shadow-1">
+                  Out of Stock
+                </span>
+                <span v-else class="status-badge status-borrowed q-px-sm shadow-1">
+                  {{ item.qty }} Left
+                </span>
+              </q-item-section>
               </q-item>
 
               <q-item v-if="lowStock.length === 0" class="q-py-xl text-center text-grey-6 flex flex-center">
@@ -229,15 +223,6 @@ onMounted(() => {
   }, 100)
 })
 
-const getBadgeClass = (status: string) => {
-  switch (status) {
-    case 'Available': return 'badge-soft-positive'
-    case 'Borrowed': return 'badge-soft-warning'
-    case 'Repair': return 'badge-soft-info'
-    case 'Damaged': return 'badge-soft-negative'
-    default: return 'badge-soft-grey'
-  }
-}
 
 const columns = [
   { name: 'id', label: 'ID', field: 'id', align: 'left', sortable: true },
