@@ -14,9 +14,9 @@
           <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Total Asset</div>
-              <div class="text-h4 text-weight-bold q-mt-sm text-dark">{{ store.totalAssets }}</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-dark data-value">{{ store.totalAssets }}</div>
             </div>
-            <q-avatar color="orange-1" text-color="primary" icon="inventory_2" size="56px" class="shadow-1" />
+            <q-avatar color="grey-3" text-color="primary" icon="inventory_2" size="56px" class="shadow-1" />
           </q-card-section>
         </q-card>
       </div>
@@ -25,9 +25,9 @@
           <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Available</div>
-              <div class="text-h4 text-weight-bold q-mt-sm text-green-7">{{ store.availableAssets }}</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-positive data-value">{{ store.availableAssets }}</div>
             </div>
-            <q-avatar color="grey-2" text-color="secondary" icon="check_circle" size="56px" class="shadow-1" />
+            <q-avatar color="grey-3" text-color="positive" icon="check_circle" size="56px" class="shadow-1" />
           </q-card-section>
         </q-card>
       </div>
@@ -36,9 +36,9 @@
           <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Borrowed</div>
-              <div class="text-h4 text-weight-bold q-mt-sm text-orange-7">{{ store.borrowedAssets }}</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-warning data-value">{{ store.borrowedAssets }}</div>
             </div>
-            <q-avatar color="orange-50" text-color="orange-700" icon="shopping_bag" size="56px" class="shadow-1" />
+            <q-avatar color="grey-3" text-color="warning" icon="shopping_bag" size="56px" class="shadow-1" />
           </q-card-section>
         </q-card>
       </div>
@@ -47,9 +47,9 @@
           <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Repair / Damaged</div>
-              <div class="text-h4 text-weight-bold q-mt-sm text-red-7">{{ store.repairDamagedAssets }}</div>
+              <div class="text-h4 text-weight-bold q-mt-sm text-negative data-value">{{ store.repairDamagedAssets }}</div>
             </div>
-            <q-avatar color="red-50" text-color="red-700" icon="build" size="56px" class="shadow-1" />
+            <q-avatar color="grey-3" text-color="negative" icon="build" size="56px" class="shadow-1" />
           </q-card-section>
         </q-card>
       </div>
@@ -165,7 +165,7 @@ const search = ref('')
 const donutOptions = ref<ApexOptions>({
   chart: { type: 'donut', fontFamily: 'inherit' },
   labels: [],
-  colors: ['#4ade80', '#fbbf24', '#f87171', '#60a5fa', '#9333ea'],
+  colors: ['#8a9a87', '#b16a48', '#d4a5a0', '#c9b89e', '#5d6e5a'],
   legend: { position: 'bottom' },
   dataLabels: { enabled: false }
 })
@@ -174,7 +174,7 @@ const donutSeries = ref<number[]>([])
 const barOptions = ref<ApexOptions>({
   chart: { type: 'bar', fontFamily: 'inherit', toolbar: { show: false } },
   xaxis: { categories: [] },
-  colors: ['#3b82f6'],
+  colors: ['#c9b89e'],
   dataLabels: { enabled: false },
   plotOptions: { bar: { borderRadius: 4, horizontal: false } },
   yaxis: {

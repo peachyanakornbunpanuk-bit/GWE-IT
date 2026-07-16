@@ -32,6 +32,11 @@ h1, h2, h3, h4, h5, h6, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-
   color: var(--ink);
 }
 
+.data-value {
+  font-family: 'Inter', sans-serif !important;
+  letter-spacing: -0.03em;
+}
+
 /* Overridden to prevent Vite default styles from breaking Quasar layout */
 #app {
   width: 100%;
