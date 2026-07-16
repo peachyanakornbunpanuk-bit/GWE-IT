@@ -595,12 +595,11 @@ app.post('/api/borrow', (req, res) => {
 
     db.serialize(() => {
         db.run('BEGIN TRANSACTION');
-        const stmtBorrow = db.prepare(`INSERT INTO borrow_records (asset_id, employee_id, borrow_date, expected_return_date, reason, status) VALUES (?, ?, ?, ?, ?, 'Active')`);
-        const stmtAsset = db.prepare(`UPDATE assets SET status = 'Borrowed', holder = ? WHERE id = ?`);
         
         asset_ids.forEach(id => {
-            stmtBorrow.run([id, employee_id, borrow_date, expected_return_date, reason]);
-            stmtAsset.run([employee_id, id]);
+            db.run(`INSERT INTO borrow_records (asset_id, employee_id, borrow_date, expected_return_date, reason, status) VALUES (?, ?, ?, ?, ?, 'Active')`, [id, employee_id, borrow_date, expected_return_date, reason]);
+            db.run(`UPDATE assets SET status = 'Borrowed', holder = ? WHERE id = ?`, [employee_id, id]);
+            
             logAudit(id, 'BORROW', `Borrowed by ${employee_id}. Reason: ${reason || 'N/A'}`, user);
             createNotification('GLOBAL_IT', 'Asset Borrowed', `Asset ${id} checked out by ${employee_id}`, `/asset/${id}/scan`, 'swap_horiz', 'warning');
             
@@ -618,9 +617,7 @@ app.post('/api/borrow', (req, res) => {
             );
             sendEmail('🟠 Alert: Equipment Borrowed', `Asset ${id} borrowed by ${employee_id}`, html);
         });
-        
-        stmtBorrow.finalize();
-        stmtAsset.finalize();
+
         db.run('COMMIT', (err) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json({ message: "Assets Borrowed Successfully" });

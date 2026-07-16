@@ -7,11 +7,20 @@
       color="primary"
       icon="smart_toy"
       size="lg"
-      class="fixed-bottom-right shadow-10"
-      style="margin: 24px; z-index: 2000; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);"
-      @mouseenter="$event.currentTarget.style.transform='scale(1.1)'"
-      @mouseleave="$event.currentTarget.style.transform='scale(1)'"
-      @click="isOpen = true; unread = false"
+      class="shadow-10"
+      v-touch-pan.prevent.mouse="handlePan"
+      :style="{
+        position: 'fixed',
+        right: '24px',
+        bottom: '24px',
+        margin: '24px',
+        zIndex: 2000,
+        transform: `translate(${panX}px, ${panY}px) scale(1)`,
+        transition: isPanning ? 'none' : 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+      }"
+      @mouseenter="!isPanning && ($event.currentTarget.style.transform=`translate(${panX}px, ${panY}px) scale(1.1)`)"
+      @mouseleave="!isPanning && ($event.currentTarget.style.transform=`translate(${panX}px, ${panY}px) scale(1)`)"
+      @click="openChat"
     >
       <q-badge color="red" floating rounded v-if="unread" class="text-bold shadow-2">1</q-badge>
     </q-btn>
@@ -127,16 +136,32 @@ const API_URL = import.meta.env.VITE_API_URL || '/api'
 const panX = ref(0)
 const panY = ref(0)
 const isPanning = ref(false)
+let draggedDistance = 0
 
 const handlePan = (ev: any) => {
   if (ev.isFirst) {
     isPanning.value = true
+    draggedDistance = 0
   }
+  
+  draggedDistance += Math.abs(ev.delta.x) + Math.abs(ev.delta.y)
+  
   panX.value += ev.delta.x
   panY.value += ev.delta.y
+  
   if (ev.isFinal) {
-    isPanning.value = false
+    // Small delay to prevent click event if it was a drag
+    setTimeout(() => {
+      isPanning.value = false
+    }, 50)
   }
+}
+
+const openChat = () => {
+  // If we dragged more than 10 pixels, it was a drag, not a click
+  if (draggedDistance > 10) return
+  isOpen.value = true
+  unread.value = false
 }
 
 interface Message {
