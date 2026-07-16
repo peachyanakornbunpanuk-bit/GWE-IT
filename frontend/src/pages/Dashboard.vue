@@ -10,8 +10,8 @@
     <div class="row q-col-gutter-md">
       <!-- KPI Cards -->
       <div class="col-12 col-md-3">
-        <q-card class="clean-card">
-          <q-card-section class="row items-center justify-between">
+        <q-card class="clean-card tilt-card" style="transform-style: preserve-3d;">
+          <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Total Asset</div>
               <div class="text-h4 text-weight-bold q-mt-sm text-blue-grey-9">{{ store.totalAssets }}</div>
@@ -21,8 +21,8 @@
         </q-card>
       </div>
       <div class="col-12 col-md-3">
-        <q-card class="clean-card">
-          <q-card-section class="row items-center justify-between">
+        <q-card class="clean-card tilt-card" style="transform-style: preserve-3d;">
+          <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Available</div>
               <div class="text-h4 text-weight-bold q-mt-sm text-green-7">{{ store.availableAssets }}</div>
@@ -32,8 +32,8 @@
         </q-card>
       </div>
       <div class="col-12 col-md-3">
-        <q-card class="clean-card">
-          <q-card-section class="row items-center justify-between">
+        <q-card class="clean-card tilt-card" style="transform-style: preserve-3d;">
+          <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Borrowed</div>
               <div class="text-h4 text-weight-bold q-mt-sm text-orange-7">{{ store.borrowedAssets }}</div>
@@ -43,8 +43,8 @@
         </q-card>
       </div>
       <div class="col-12 col-md-3">
-        <q-card class="clean-card">
-          <q-card-section class="row items-center justify-between">
+        <q-card class="clean-card tilt-card" style="transform-style: preserve-3d;">
+          <q-card-section class="row items-center justify-between" style="transform: translateZ(30px);">
             <div>
               <div class="text-subtitle2 text-grey-6 text-uppercase tracking-wider text-weight-bold">Repair / Damaged</div>
               <div class="text-h4 text-weight-bold q-mt-sm text-red-7">{{ store.repairDamagedAssets }}</div>
@@ -118,8 +118,8 @@
 
       <!-- Low Stock & Quick Actions -->
       <div class="col-12 col-md-4">
-        <q-card class="clean-card h-full">
-          <q-card-section class="q-pb-sm q-pt-md">
+        <q-card class="clean-card h-full tilt-card" style="transform-style: preserve-3d;">
+          <q-card-section class="q-pb-sm q-pt-md" style="transform: translateZ(20px);">
             <div class="text-h6 text-blue-grey-9 text-weight-bold flex items-center" style="line-height: 1.5; padding-top: 4px;">
               <q-icon name="warning" color="warning" class="q-mr-sm" size="24px" /> Low Stock Alerts
             </div>
@@ -161,6 +161,7 @@ import { useAssetStore } from '../stores/assetStore'
 import VueApexCharts from 'vue3-apexcharts'
 import axios from 'axios'
 import type { ApexOptions } from 'apexcharts'
+import VanillaTilt from 'vanilla-tilt'
 
 const API_URL = import.meta.env.VITE_API_URL || '/api'
 const store = useAssetStore()
@@ -212,6 +213,20 @@ const fetchAnalytics = async () => {
 onMounted(() => {
   store.fetchAssets()
   fetchAnalytics()
+  // Initialize 3D Tilt Effect on cards
+  setTimeout(() => {
+    const tiltElements = document.querySelectorAll(".tilt-card")
+    if (tiltElements.length > 0) {
+      // @ts-ignore
+      VanillaTilt.init(Array.from(tiltElements), {
+        max: 8,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.15,
+        scale: 1.02
+      })
+    }
+  }, 100)
 })
 
 const getBadgeClass = (status: string) => {

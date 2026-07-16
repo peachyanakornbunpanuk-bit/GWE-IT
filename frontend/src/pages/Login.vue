@@ -1,7 +1,8 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="bg-blue-grey-1">
+  <q-layout view="hHh Lpr lff">
+    <div ref="vantaRef" class="fullscreen" style="z-index: -1;"></div>
     <q-page-container>
-      <q-page class="row justify-center items-center window-height">
+      <q-page class="row justify-center items-center window-height" style="background: transparent;">
         <q-card class="shadow-3" style="width: 100%; max-width: 400px; border-radius: 12px;">
           <q-card-section class="bg-primary text-white q-pa-lg text-center" style="border-radius: 12px 12px 0 0;">
             <div class="text-h5 text-weight-bold">IAMS Enterprise</div>
@@ -60,10 +61,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from '../stores/authStore'
+import * as THREE from 'three'
+// @ts-ignore
+import NET from 'vanta/dist/vanta.net.min'
+
+const vantaRef = ref(null)
+let vantaEffect: any = null
+
+onMounted(() => {
+  vantaEffect = NET({
+    el: vantaRef.value,
+    THREE: THREE,
+    color: 0x42A5F5,
+    backgroundColor: 0x0f172a, // Deep slate background
+    points: 15.00,
+    maxDistance: 25.00,
+    spacing: 20.00,
+    showDots: true
+  })
+})
+
+onBeforeUnmount(() => {
+  if (vantaEffect) vantaEffect.destroy()
+})
 
 const username = ref('')
 const password = ref('')
