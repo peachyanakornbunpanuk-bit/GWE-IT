@@ -98,9 +98,6 @@
           </q-form>
         </q-card-section>
         
-        <q-card-section class="text-center text-grey-6 q-pt-none q-pb-lg">
-          <small>Default accounts: manager/admin, it/admin, user/user</small>
-        </q-card-section>
       </q-card>
     </q-dialog>
   </q-layout>
