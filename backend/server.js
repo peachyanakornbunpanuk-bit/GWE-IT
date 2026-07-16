@@ -760,7 +760,7 @@ const searchAssetsTool = {
 };
 
 const aiModel = genAI.getGenerativeModel({
-  model: "gemini-flash-latest",
+  model: "gemini-2.5-flash",
   tools: [{ functionDeclarations: [searchAssetsTool] }],
   systemInstruction: "You are the IAMS IT Assistant. You help employees check inventory. Use the search_assets tool to check the database when asked about equipment. RULES: 1. You MUST respond ONLY in Thai. 2. Keep your answers EXTREMELY concise and short (1-2 sentences max). 3. Do not add conversational filler. 4. VERY IMPORTANT: When counting items, you MUST SUM the 'qty' field from the tool response (do NOT just count the number of rows)."
 });
