@@ -10,12 +10,10 @@
       <q-toolbar class="q-px-xl q-py-sm">
         <q-toolbar-title class="flex items-center stagger-item">
           <div class="brand-mark q-mr-sm"></div>
-          <span style="font-family: 'Fraunces', serif; letter-spacing: 0.01em; font-size: 1.15rem; font-weight: 400;">IAMS</span>
+          <span style="font-family: 'Fraunces', serif; letter-spacing: 0.01em; font-size: 1.15rem; font-weight: 400;">Greenwood Entertainment</span>
         </q-toolbar-title>
         
-        <q-space />
-        
-        <div class="nav-links gt-sm">
+        <div class="nav-links gt-sm absolute-center">
           <span class="cursor-pointer stagger-item delay-1" @click="loginDialog = true">Asset Tracking</span>
           <span class="cursor-pointer stagger-item delay-2" @click="loginDialog = true">Inventory</span>
           <span class="cursor-pointer stagger-item delay-3" @click="loginDialog = true">Maintenance</span>
@@ -37,7 +35,7 @@
       <q-page class="row justify-center items-center window-height" style="background: transparent;">
         <div class="hero-content text-center" style="color: #faf5ec; z-index: 5; padding-top: 4rem;">
           <div class="hero-label fade-up">Enterprise Asset Management<span></span>Est. 2024</div>
-          <h1 class="hero-title fade-up delay-1">IAMS Enterprise</h1>
+          <h1 class="hero-title fade-up delay-1"> Greenwood Entertainment</h1>
           <p class="hero-tag fade-up delay-2">
             Intelligent tracking for complex organizations. One dashboard to manage hardware, software, and maintenance lifecycles seamlessly.
           </p>
@@ -57,7 +55,7 @@
       <q-card class="clean-card shadow-10" style="width: 100%; max-width: 420px; border-radius: 8px;">
         <q-card-section class="q-pa-xl text-center" style="border-radius: 8px 8px 0 0; border-bottom: 1px solid var(--line-soft);">
           <div class="column justify-center items-center">
-            <span style="font-family: 'Fraunces', serif; letter-spacing: 0.02em; font-size: 1.7rem; font-weight: 400; color: var(--ink);">IAMS</span>
+            <span style="font-family: 'Fraunces', serif; letter-spacing: 0.02em; font-size: 1.7rem; font-weight: 400; color: var(--ink);">Greenwood Entertainment</span>
             <span class="text-primary q-mt-xs" style="font-family: 'Fraunces', serif; font-style: italic; letter-spacing: 0.05em; font-size: 0.9rem;">Enterprise</span>
           </div>
         </q-card-section>
@@ -217,7 +215,7 @@ const handleLogin = async () => {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
-  border-color: rgba(250, 245, 236, 0.6) !important;
+  border-color: rgba(250, 245, 236, 0.25) !important;
   transition: all 400ms ease;
   text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
