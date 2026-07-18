@@ -131,12 +131,13 @@
         </q-card-section>
         <q-card-section class="q-pt-lg">
           <q-form @submit="onAdd" class="q-gutter-md">
+            <q-input outlined v-model="form.id" label="Asset ID (Optional - Auto-generates if blank)" />
             <q-input outlined v-model="form.name" label="Asset Name" required />
             <q-select outlined v-model="form.category" :options="settingStore.categories" label="Category" required />
             <q-select outlined v-model="form.location" :options="settingStore.locations" label="Location (Room/Area)" required />
             <q-select outlined v-model="form.status" :options="['Available', 'Borrowed', 'Repair', 'Damaged']" label="Status" required />
             <q-input outlined v-model.number="form.value" type="number" label="Value (฿)" required />
-            <q-input outlined v-model.number="form.quantity" type="number" label="Quantity" min="1" required />
+            <q-input outlined v-model.number="form.quantity" type="number" label="Quantity" min="1" required :disable="!!form.id" :hint="form.id ? 'Quantity must be 1 when assigning a manual Asset ID' : ''" />
             <q-file outlined v-model="imageFile" label="Asset Photo (Optional)" accept="image/*" dense clearable>
               <template v-slot:prepend>
                 <q-icon name="attach_file" />
@@ -158,6 +159,7 @@
         </q-card-section>
         <q-card-section class="q-pt-lg">
           <q-form @submit="onEdit" class="q-gutter-md">
+            <q-input outlined v-model="form.id" label="Asset ID" disable readonly hint="Asset ID cannot be changed" />
             <q-input outlined v-model="form.name" label="Asset Name" required />
             <q-select outlined v-model="form.category" :options="settingStore.categories" label="Category" required />
             <q-select outlined v-model="form.location" :options="settingStore.locations" label="Location (Room/Area)" required />
@@ -284,12 +286,12 @@ const qrAssetName = ref('')
 const qrInfoValue = ref('')
 
 const editingId = ref('')
-const form = ref({ name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 })
+const form = ref({ id: '', name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 })
 const imageFile = ref<File | null>(null)
 
 watch(addDialog, (val) => {
   if (!val) {
-    form.value = { name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
+    form.value = { id: '', name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
     imageFile.value = null
   }
 })
@@ -343,14 +345,16 @@ const onAdd = async () => {
     if (qty > 1) {
       const assets = []
       for (let i = 0; i < qty; i++) {
-        assets.push({ ...form.value, image_url: imageUrl })
+        // Exclude ID since multiple quantities with the same manual ID would fail
+        const { id, ...rest } = form.value
+        assets.push({ ...rest, image_url: imageUrl })
       }
-      await store.bulkUploadAssets(assets as any)
+      await store.addMultipleAssets(assets as any)
     } else {
       await store.addAsset({ ...form.value, image_url: imageUrl } as any)
     }
     addDialog.value = false
-    form.value = { name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
+    form.value = { id: '', name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
     imageFile.value = null
     $q.notify({ color: 'positive', message: `Successfully added ${qty} asset(s)`, position: 'top-right' })
   } catch (err: any) {

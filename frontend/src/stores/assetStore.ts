@@ -56,6 +56,19 @@ export const useAssetStore = defineStore('asset', {
       }
     },
 
+    async addMultipleAssets(assets: Omit<Asset, 'id'>[]) {
+      try {
+        // Run sequentially to ensure ID generation order
+        for (const asset of assets) {
+          await axios.post(`${API_URL}/assets`, asset)
+        }
+        await this.fetchAssets()
+      } catch (error) {
+        console.error('Error adding multiple assets:', error)
+        throw error
+      }
+    },
+
     async updateAsset(id: string, updatedAsset: Partial<Asset>) {
       try {
         await axios.put(`${API_URL}/assets/${id}`, updatedAsset)
