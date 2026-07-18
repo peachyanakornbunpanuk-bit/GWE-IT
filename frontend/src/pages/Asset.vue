@@ -375,7 +375,7 @@ const onEdit = async () => {
     if (imageFile.value) {
       imageUrl = await uploadImage(imageFile.value)
     }
-    await axios.put(`${API_URL}/assets/${editingId.value}`, {
+    await axios.put(`${API_URL}/assets/${encodeURIComponent(editingId.value)}`, {
       ...form.value,
       image_url: imageUrl,
       user: authStore.user?.username
@@ -395,9 +395,13 @@ const confirmDelete = (id: string) => {
     cancel: true,
     persistent: true
   }).onOk(async () => {
-    await axios.delete(`${API_URL}/assets/${id}?user=${authStore.user?.username}`)
-    await store.fetchAssets()
-    $q.notify({ color: 'negative', message: 'Asset deleted', position: 'top-right' })
+    try {
+      await axios.delete(`${API_URL}/assets/${encodeURIComponent(id)}?user=${authStore.user?.username || ''}`)
+      await store.fetchAssets()
+      $q.notify({ color: 'negative', message: 'Asset deleted', position: 'top-right' })
+    } catch (err) {
+      $q.notify({ color: 'negative', message: 'Error deleting asset', position: 'top' })
+    }
   })
 }
 
