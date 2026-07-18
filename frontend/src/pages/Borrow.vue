@@ -34,17 +34,17 @@
                 <div class="col-12 col-sm-6">
                   <q-input outlined v-model="form.expected_return_date" type="date" label="Expected Return Date *" required />
                 </div>
-                <!-- Reason Field -->
-                <div class="col-12 col-md-6">
-                  <q-input outlined v-model="form.reason" type="textarea" label="Notes / Reason for Borrowing *" placeholder="e.g. For remote work, for streaming event..." rows="2" required />
-                </div>
                 <!-- Location Field -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-sm-6">
                   <q-select outlined v-model="selectedBuilding" :options="settingStore.buildings" label="Destination Building" clearable />
                 </div>
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-sm-6">
                   <q-select outlined v-model="selectedRoom" :options="availableRooms" label="Destination Room" :disable="!selectedBuilding" clearable />
                   <div class="text-caption text-grey q-mt-xs">If selected, the asset's location will automatically update.</div>
+                </div>
+                <!-- Reason Field -->
+                <div class="col-12">
+                  <q-input outlined v-model="form.reason" type="textarea" label="Notes / Reason for Borrowing *" placeholder="e.g. For remote work, for streaming event..." rows="3" required />
                 </div>
               </div>
 

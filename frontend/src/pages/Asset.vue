@@ -177,7 +177,7 @@
                 <q-select outlined v-model="selectedRoom" :options="availableRooms" label="Room" :disable="!selectedBuilding" required />
               </div>
             </div>
-            <q-select outlined v-model="form.status" :options="['Available', 'Borrowed', 'Repair', 'Damaged']" label="Status" required />
+            <q-select outlined v-model="form.status" :options="['Available', 'Borrowed', 'Repair', 'Damaged']" label="Status" :disable="form.status === 'Borrowed'" :hint="form.status === 'Borrowed' ? 'Borrowed assets must be returned via the system' : ''" required />
             <q-input outlined v-model.number="form.value" type="number" label="Value (฿)" required />
             <q-file outlined v-model="imageFile" label="Update Photo (Optional)" accept="image/*" dense clearable>
               <template v-slot:prepend>

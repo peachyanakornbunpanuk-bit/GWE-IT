@@ -645,7 +645,7 @@ app.post('/api/return', (req, res) => {
     const { borrow_id, asset_id, return_date, user } = req.body;
     db.serialize(() => {
         db.run(`UPDATE borrow_records SET return_date = ?, status = 'Returned' WHERE asset_id = ? AND status = 'Active'`, [return_date, asset_id]);
-        db.run(`UPDATE assets SET status = 'Available', holder = '-' WHERE id = ?`, [asset_id], function(err) {
+        db.run(`UPDATE assets SET status = 'Available', holder = '-', location = 'IT Room' WHERE id = ?`, [asset_id], function(err) {
             logAudit(asset_id, 'RETURN', `Returned to inventory.`, user);
             createNotification('GLOBAL_IT', 'Asset Returned', `Asset ${asset_id} was returned`, `/asset/${asset_id}/scan`, 'check_circle', 'positive');
             

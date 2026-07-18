@@ -288,7 +288,7 @@ const onSubmitReturn = async () => {
   submitting.value = true
   try {
     await axios.post(`${API_URL}/return`, {
-      asset_ids: [assetId],
+      asset_id: assetId,
       return_date: new Date().toISOString(),
       condition: returnCondition.value,
       user: authStore.user.username
