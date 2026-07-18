@@ -12,7 +12,6 @@ const app = createApp(App)
 const pinia = createPinia()
 
 // Global Axios Configuration
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3000/api`
 axios.interceptors.request.use((config) => {
   const user = JSON.parse(localStorage.getItem('auth') || 'null')
   if (user && user.token) {
