@@ -27,10 +27,10 @@ export const useTransactionStore = defineStore('transaction', {
       }
     },
 
-    // MODIFIED: Accepts array of asset_ids, dates, and reason
-    async borrowAsset(asset_ids: string[], employee_id: string, borrow_date: string, expected_return_date: string, reason: string) {
+    // MODIFIED: Accepts array of asset_ids, dates, reason, and location
+    async borrowAsset(asset_ids: string[], employee_id: string, borrow_date: string, expected_return_date: string, reason: string, location: string) {
       await axios.post(`${API_URL}/borrow`, {
-        asset_ids, employee_id, borrow_date, expected_return_date, reason
+        asset_ids, employee_id, borrow_date, expected_return_date, reason, location
       })
       await this.fetchAllTransactions()
       useAssetStore().fetchAssets()

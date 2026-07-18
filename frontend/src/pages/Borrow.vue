@@ -35,8 +35,13 @@
                   <q-input outlined v-model="form.expected_return_date" type="date" label="Expected Return Date *" required />
                 </div>
                 <!-- Reason Field -->
-                <div class="col-12">
+                <div class="col-12 col-md-6">
                   <q-input outlined v-model="form.reason" type="textarea" label="Notes / Reason for Borrowing *" placeholder="e.g. For remote work, for streaming event..." rows="2" required />
+                </div>
+                <!-- Location Field -->
+                <div class="col-12 col-md-6">
+                  <q-select outlined v-model="form.location" :options="settingStore.locations" label="Destination Room (Optional)" placeholder="Where will the item be used?" clearable />
+                  <div class="text-caption text-grey q-mt-xs">If selected, the asset's location will automatically update in the system.</div>
                 </div>
               </div>
 
@@ -213,11 +218,13 @@ import { useQuasar } from 'quasar'
 import { useTransactionStore } from '../stores/transactionStore'
 import { useAssetStore } from '../stores/assetStore'
 import { useEmployeeStore } from '../stores/employeeStore'
+import { useSettingStore } from '../stores/settingStore'
 
 const $q = useQuasar()
 const txStore = useTransactionStore()
 const assetStore = useAssetStore()
 const empStore = useEmployeeStore()
+const settingStore = useSettingStore()
 
 const now = new Date()
 const borrowDateDefault = now.toISOString().split('T')[0]
@@ -233,6 +240,7 @@ const form = ref({
   borrow_date: borrowDateDefault,
   expected_return_date: returnDateDefault,
   reason: '',
+  location: '',
   items: [{ category: '', asset_id: '' }] 
 })
 
@@ -244,6 +252,7 @@ onMounted(() => {
   txStore.fetchAllTransactions()
   assetStore.fetchAssets()
   empStore.fetchEmployees()
+  settingStore.fetchSettings()
 })
 
 const empOptions = computed(() => empStore.employees.map(e => ({ label: `${e.name} (${e.department})`, value: e.id })))
@@ -352,12 +361,13 @@ const onBorrow = async () => {
     return;
   }
   
-  await txStore.borrowAsset(assetIds, form.value.employee_id, form.value.borrow_date, form.value.expected_return_date, form.value.reason)
+  await txStore.borrowAsset(assetIds, form.value.employee_id, form.value.borrow_date, form.value.expected_return_date, form.value.reason, form.value.location)
   $q.notify({ color: 'positive', message: `Checked out ${assetIds.length} item(s) successfully`, position: 'top-right' })
   
   // FIX: Reset form fully
   form.value.employee_id = ''
   form.value.reason = ''
+  form.value.location = ''
   form.value.items = [{ category: '', asset_id: '' }]
   
   // Reset quasar form validation state
