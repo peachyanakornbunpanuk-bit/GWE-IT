@@ -399,12 +399,17 @@ const onBorrow = async () => {
 }
 
 const onReturnIndividual = async (recordId: number, assetId: string) => {
-  await txStore.returnAsset(recordId, assetId)
-  $q.notify({ color: 'info', message: 'Asset Returned Successfully', position: 'top-right' })
-  
-  // If the group is completely empty after returning, close the dialog
-  if (selectedGroup.value && selectedGroup.value.items.length === 0) {
-    detailsDialog.value = false
+  try {
+    await txStore.returnAsset(recordId, assetId)
+    $q.notify({ color: 'info', message: 'Asset Returned Successfully', position: 'top-right' })
+    
+    // If the group is completely empty after returning, close the dialog
+    if (!selectedGroup.value || selectedGroup.value.items.length === 0) {
+      detailsDialog.value = false
+    }
+  } catch (error) {
+    console.error('Return Error:', error)
+    $q.notify({ color: 'negative', message: 'Failed to return asset', position: 'top-right' })
   }
 }
 </script>
