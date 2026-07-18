@@ -183,12 +183,12 @@ app.use('/api', (req, res, next) => {
         
         // RBAC Middleware
         const allowedForEmployees = [
-            { method: 'GET', path: '/api/assets' },
-            { method: 'GET', path: '/api/employees' },
-            { method: 'GET', path: '/api/notifications' },
-            { method: 'PUT', path: '/api/notifications/' },
-            { method: 'POST', path: '/api/borrow' },
-            { method: 'POST', path: '/api/return' }
+            { method: 'GET', path: '/assets' },
+            { method: 'GET', path: '/employees' },
+            { method: 'GET', path: '/notifications' },
+            { method: 'PUT', path: '/notifications/' },
+            { method: 'POST', path: '/borrow' },
+            { method: 'POST', path: '/return' }
         ];
         
         if (req.user.role === 'Employee') {
