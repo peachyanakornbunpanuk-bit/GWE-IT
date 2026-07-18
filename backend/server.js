@@ -150,8 +150,11 @@ app.use(cors({
 }));
 
 // Fallback for cached frontend clients sending requests to /api/api/...
-app.use('/api/api', (req, res) => {
-    res.redirect(307, '/api' + req.url);
+app.use((req, res, next) => {
+    if (req.url.startsWith('/api/api/')) {
+        req.url = req.url.replace('/api/api/', '/api/');
+    }
+    next();
 });
 
 const upload = multer({ storage });
