@@ -136,6 +136,7 @@
             <q-select outlined v-model="form.location" :options="settingStore.locations" label="Location (Room/Area)" required />
             <q-select outlined v-model="form.status" :options="['Available', 'Borrowed', 'Repair', 'Damaged']" label="Status" required />
             <q-input outlined v-model.number="form.value" type="number" label="Value (฿)" required />
+            <q-input outlined v-model.number="form.quantity" type="number" label="Quantity" min="1" required />
             <q-file outlined v-model="imageFile" label="Asset Photo (Optional)" accept="image/*" dense clearable>
               <template v-slot:prepend>
                 <q-icon name="attach_file" />
@@ -283,12 +284,12 @@ const qrAssetName = ref('')
 const qrInfoValue = ref('')
 
 const editingId = ref('')
-const form = ref({ name: '', category: '', status: 'Available', value: 0, image_url: '', location: '' })
+const form = ref({ name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 })
 const imageFile = ref<File | null>(null)
 
 watch(addDialog, (val) => {
   if (!val) {
-    form.value = { name: '', category: '', status: 'Available', value: 0, image_url: '', location: '' }
+    form.value = { name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
     imageFile.value = null
   }
 })
@@ -337,11 +338,21 @@ const onAdd = async () => {
     if (imageFile.value) {
       imageUrl = await uploadImage(imageFile.value)
     }
-    await store.addAsset({ ...form.value, image_url: imageUrl } as any)
+    const qty = form.value.quantity || 1
+    
+    if (qty > 1) {
+      const assets = []
+      for (let i = 0; i < qty; i++) {
+        assets.push({ ...form.value, image_url: imageUrl })
+      }
+      await store.bulkUploadAssets(assets as any)
+    } else {
+      await store.addAsset({ ...form.value, image_url: imageUrl } as any)
+    }
     addDialog.value = false
-    form.value = { name: '', category: '', status: 'Available', value: 0, image_url: '', location: '' }
+    form.value = { name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
     imageFile.value = null
-    $q.notify({ color: 'positive', message: 'Asset added', position: 'top-right' })
+    $q.notify({ color: 'positive', message: `Successfully added ${qty} asset(s)`, position: 'top-right' })
   } catch (err: any) {
     $q.notify({ color: 'negative', message: 'Error uploading or adding asset', position: 'top' })
   }
