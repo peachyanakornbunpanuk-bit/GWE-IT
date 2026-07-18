@@ -160,23 +160,37 @@
             </div>
           </div>
 
-          <q-list bordered separator style="max-width: 600px; border-radius: 8px">
-            <q-item v-for="loc in settingStore.rawLocations" :key="loc.id">
-              <q-item-section>
-                <q-item-label class="text-weight-medium">{{ loc.value.split(' > ')[1] || loc.value }}</q-item-label>
-                <q-item-label caption v-if="loc.value.includes(' > ')">{{ loc.value.split(' > ')[0] }}</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <div class="row q-gutter-xs">
-                  <q-btn icon="edit" flat round dense color="primary" size="sm" @click="editRoomPrompt(loc)" />
-                  <q-btn icon="delete" flat round dense color="negative" size="sm" @click="deleteSetting(loc.id)" />
-                </div>
-              </q-item-section>
-            </q-item>
-            <q-item v-if="settingStore.rawLocations.length === 0">
-              <q-item-section class="text-grey-6 text-italic">No rooms configured.</q-item-section>
-            </q-item>
-          </q-list>
+          <div class="row q-col-gutter-md q-mb-md items-center">
+            <div class="col-12 col-sm-6 text-subtitle2 text-weight-bold">
+              Existing Rooms
+            </div>
+            <div class="col-6 col-sm-3">
+              <q-select outlined dense v-model="filterBuilding" :options="settingStore.buildings" label="Filter by Building" clearable />
+            </div>
+            <div class="col-6 col-sm-3">
+              <q-input outlined dense v-model="searchRoom" placeholder="Search Room..." clearable>
+                <template v-slot:append>
+                  <q-icon name="search" />
+                </template>
+              </q-input>
+            </div>
+          </div>
+
+          <q-table
+            flat bordered
+            :rows="filteredRooms"
+            :columns="roomColumns"
+            row-key="id"
+            :pagination="{ rowsPerPage: 10 }"
+            class="bg-transparent"
+          >
+            <template v-slot:body-cell-actions="props">
+              <q-td :props="props" align="right">
+                <q-btn icon="edit" flat round dense color="primary" size="sm" @click="editRoomPrompt(props.row)" />
+                <q-btn icon="delete" flat round dense color="negative" size="sm" @click="deleteSetting(props.row.id)" />
+              </q-td>
+            </template>
+          </q-table>
         </q-tab-panel>
         
       </q-tab-panels>
@@ -185,7 +199,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { useSettingStore } from '../stores/settingStore'
 
@@ -200,6 +214,27 @@ const newDepartment = ref('')
 const newBuilding = ref('')
 const newLocation = ref('')
 const selectedBuildingForRoom = ref('')
+
+const searchRoom = ref('')
+const filterBuilding = ref('')
+
+const roomColumns = [
+  { name: 'building', label: 'Building', field: (row: any) => row.value.includes(' > ') ? row.value.split(' > ')[0] : 'Unassigned', align: 'left', sortable: true },
+  { name: 'room', label: 'Room', field: (row: any) => row.value.includes(' > ') ? row.value.split(' > ')[1] : row.value, align: 'left', sortable: true },
+  { name: 'actions', label: 'Actions', align: 'right' }
+] as any
+
+const filteredRooms = computed(() => {
+  let rooms = settingStore.rawLocations
+  if (filterBuilding.value) {
+    rooms = rooms.filter(r => r.value.startsWith(filterBuilding.value + ' > '))
+  }
+  if (searchRoom.value) {
+    const q = searchRoom.value.toLowerCase()
+    rooms = rooms.filter(r => r.value.toLowerCase().includes(q))
+  }
+  return rooms
+})
 
 const addSetting = async (type: string, value: string) => {
   if (!value.trim()) return
