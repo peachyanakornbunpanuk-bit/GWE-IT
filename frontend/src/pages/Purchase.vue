@@ -239,7 +239,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { useTransactionStore } from '../stores/transactionStore'
 import { useSettingStore } from '../stores/settingStore'
