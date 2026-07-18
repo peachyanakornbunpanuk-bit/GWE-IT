@@ -141,9 +141,21 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
 });
+
+// Add CORS headers for API
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Fallback for cached frontend clients sending requests to /api/api/...
+app.use('/api/api', (req, res) => {
+    res.redirect(307, '/api' + req.url);
+});
+
 const upload = multer({ storage });
 
-app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(uploadDir));
 
