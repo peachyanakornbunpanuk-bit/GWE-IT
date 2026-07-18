@@ -20,7 +20,8 @@
         <q-tab name="categories" label="Asset Categories" class="text-weight-bold q-px-md" />
         <q-tab name="suppliers" label="Vendors & Suppliers" class="text-weight-bold q-px-md" />
         <q-tab name="departments" label="Company Departments" class="text-weight-bold q-px-md" />
-        <q-tab name="locations" label="Physical Locations" class="text-weight-bold q-px-md" />
+        <q-tab name="buildings" label="Buildings" class="text-weight-bold q-px-md" />
+        <q-tab name="locations" label="Rooms (Locations)" class="text-weight-bold q-px-md" />
       </q-tabs>
 
       <q-separator />
@@ -114,31 +115,66 @@
           </q-list>
         </q-tab-panel>
 
-        <!-- Locations Tab -->
-        <q-tab-panel name="locations" class="q-pa-lg">
-          <div class="text-h6 text-weight-bold q-mb-md">Manage Physical Locations</div>
+        <!-- Buildings Tab -->
+        <q-tab-panel name="buildings" class="q-pa-lg">
+          <div class="text-h6 text-weight-bold q-mb-md">Manage Buildings</div>
           
           <div class="row q-col-gutter-md q-mb-lg" style="max-width: 500px">
             <div class="col-8">
-              <q-input outlined dense v-model="newLocation" placeholder="e.g. Server Room A" @keyup.enter="addSetting('location', newLocation)" />
+              <q-input outlined dense v-model="newBuilding" placeholder="e.g. Head Office" @keyup.enter="addSetting('building', newBuilding)" />
             </div>
             <div class="col-4">
-              <q-btn color="primary" icon="add" label="Add" unelevated class="full-width h-full" @click="addSetting('location', newLocation)" />
+              <q-btn color="primary" icon="add" label="Add" unelevated class="full-width h-full" @click="addSetting('building', newBuilding)" />
             </div>
           </div>
 
           <q-list bordered separator style="max-width: 500px; border-radius: 8px">
-            <q-item v-for="loc in settingStore.rawLocations" :key="loc.id">
-              <q-item-section class="text-weight-medium">{{ loc.value }}</q-item-section>
+            <q-item v-for="bld in settingStore.rawBuildings" :key="bld.id">
+              <q-item-section class="text-weight-medium">{{ bld.value }}</q-item-section>
               <q-item-section side>
                 <div class="row q-gutter-xs">
-                  <q-btn icon="edit" flat round dense color="primary" size="sm" @click="editSettingPrompt(loc)" />
+                  <q-btn icon="edit" flat round dense color="primary" size="sm" @click="editSettingPrompt(bld)" />
+                  <q-btn icon="delete" flat round dense color="negative" size="sm" @click="deleteSetting(bld.id)" />
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="settingStore.rawBuildings.length === 0">
+              <q-item-section class="text-grey-6 text-italic">No buildings configured.</q-item-section>
+            </q-item>
+          </q-list>
+        </q-tab-panel>
+
+        <!-- Locations Tab -->
+        <q-tab-panel name="locations" class="q-pa-lg">
+          <div class="text-h6 text-weight-bold q-mb-md">Manage Rooms</div>
+          
+          <div class="row q-col-gutter-md q-mb-lg" style="max-width: 600px">
+            <div class="col-4">
+              <q-select outlined dense v-model="selectedBuildingForRoom" :options="settingStore.buildings" label="Select Building" />
+            </div>
+            <div class="col-5">
+              <q-input outlined dense v-model="newLocation" placeholder="e.g. Room 101" @keyup.enter="addRoom" :disable="!selectedBuildingForRoom" />
+            </div>
+            <div class="col-3">
+              <q-btn color="primary" icon="add" label="Add" unelevated class="full-width h-full" @click="addRoom" :disable="!selectedBuildingForRoom || !newLocation" />
+            </div>
+          </div>
+
+          <q-list bordered separator style="max-width: 600px; border-radius: 8px">
+            <q-item v-for="loc in settingStore.rawLocations" :key="loc.id">
+              <q-item-section>
+                <q-item-label class="text-weight-medium">{{ loc.value.split(' > ')[1] || loc.value }}</q-item-label>
+                <q-item-label caption v-if="loc.value.includes(' > ')">{{ loc.value.split(' > ')[0] }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <div class="row q-gutter-xs">
+                  <q-btn icon="edit" flat round dense color="primary" size="sm" @click="editRoomPrompt(loc)" />
                   <q-btn icon="delete" flat round dense color="negative" size="sm" @click="deleteSetting(loc.id)" />
                 </div>
               </q-item-section>
             </q-item>
             <q-item v-if="settingStore.rawLocations.length === 0">
-              <q-item-section class="text-grey-6 text-italic">No locations configured.</q-item-section>
+              <q-item-section class="text-grey-6 text-italic">No rooms configured.</q-item-section>
             </q-item>
           </q-list>
         </q-tab-panel>
@@ -161,7 +197,9 @@ const tab = ref('categories')
 const newCategory = ref('')
 const newSupplier = ref('')
 const newDepartment = ref('')
+const newBuilding = ref('')
 const newLocation = ref('')
+const selectedBuildingForRoom = ref('')
 
 const addSetting = async (type: string, value: string) => {
   if (!value.trim()) return
@@ -170,15 +208,53 @@ const addSetting = async (type: string, value: string) => {
     await settingStore.addSetting(type, value.trim())
     
     // Clear inputs
-    if (type === 'category') newCategory.value = ''
-    if (type === 'supplier') newSupplier.value = ''
-    if (type === 'department') newDepartment.value = ''
-    if (type === 'location') newLocation.value = ''
+    newCategory.value = ''
+    newSupplier.value = ''
+    newDepartment.value = ''
+    newBuilding.value = ''
     $q.notify({ color: 'positive', message: 'Setting added successfully', position: 'top-right' })
   } catch (err) {
-    console.error('Failed to add setting:', err)
-    $q.notify({ color: 'negative', message: 'Failed to add setting' })
+    $q.notify({ color: 'negative', message: 'Failed to add setting', position: 'top' })
   }
+}
+
+const addRoom = async () => {
+  if (!selectedBuildingForRoom.value || !newLocation.value.trim()) return
+  try {
+    const fullName = `${selectedBuildingForRoom.value} > ${newLocation.value.trim()}`
+    await settingStore.addSetting('location', fullName)
+    newLocation.value = ''
+    $q.notify({ color: 'positive', message: 'Room added successfully', position: 'top-right' })
+  } catch (err) {
+    $q.notify({ color: 'negative', message: 'Failed to add room', position: 'top' })
+  }
+}
+
+const editRoomPrompt = (setting: any) => {
+  const parts = setting.value.split(' > ')
+  const building = parts.length > 1 ? parts[0] : ''
+  const roomName = parts.length > 1 ? parts[1] : setting.value
+
+  $q.dialog({
+    title: 'Edit Room',
+    message: `Edit room name for building: ${building || 'Unknown'}`,
+    prompt: {
+      model: roomName,
+      type: 'text'
+    },
+    cancel: true,
+    persistent: true
+  }).onOk(async (data: string) => {
+    if (data.trim()) {
+      try {
+        const newValue = building ? `${building} > ${data.trim()}` : data.trim()
+        await settingStore.editSetting(setting.id, newValue)
+        $q.notify({ color: 'positive', message: 'Room updated successfully', position: 'top-right' })
+      } catch (err) {
+        $q.notify({ color: 'negative', message: 'Failed to update room', position: 'top' })
+      }
+    }
+  })
 }
 
 const deleteSetting = (id: number) => {

@@ -71,11 +71,23 @@
                 <div class="col-12 col-sm-6">
                   <q-select 
                     outlined 
-                    v-model="form.location" 
-                    :options="settingStore.locations" 
-                    label="Default Location (Room/Area) *"
+                    v-model="selectedBuilding" 
+                    :options="settingStore.buildings" 
+                    label="Building *"
                     required
-                    :rules="[val => !!val || 'Location is required']"
+                    :rules="[val => !!val || 'Building is required']"
+                  />
+                </div>
+
+                <div class="col-12 col-sm-6">
+                  <q-select 
+                    outlined 
+                    v-model="selectedRoom" 
+                    :options="availableRooms" 
+                    label="Room/Area *"
+                    :disable="!selectedBuilding"
+                    required
+                    :rules="[val => !!val || 'Room is required']"
                   />
                 </div>
 
@@ -251,9 +263,12 @@ const form = ref({
   supplier: '', 
   cost: null as any, 
   quantity: 1,
-  purchase_date: getTodayDate(),
-  location: ''
+  purchase_date: getTodayDate()
 })
+
+const selectedBuilding = ref('')
+const selectedRoom = ref('')
+const availableRooms = computed(() => selectedBuilding.value ? settingStore.locationsByBuilding[selectedBuilding.value] || [] : [])
 
 onMounted(() => {
   txStore.fetchAllTransactions()
@@ -275,8 +290,9 @@ const openDetails = (_evt: any, row: any) => {
 
 const onPurchase = async () => {
   try {
+    const locationStr = `${selectedBuilding.value} > ${selectedRoom.value}`
     // Pass quantity, date, and location to the store
-    await txStore.recordPurchase(form.value.item_name, form.value.category, form.value.supplier, form.value.cost, form.value.quantity, form.value.purchase_date, form.value.location)
+    await txStore.recordPurchase(form.value.item_name, form.value.category, form.value.supplier, form.value.cost, form.value.quantity, form.value.purchase_date, locationStr)
     
     $q.notify({ 
       color: 'positive', 
@@ -291,7 +307,8 @@ const onPurchase = async () => {
     form.value.cost = null as any
     form.value.quantity = 1
     form.value.purchase_date = getTodayDate()
-    form.value.location = ''
+    selectedBuilding.value = ''
+    selectedRoom.value = ''
     
     if (purchaseForm.value) {
       // Small timeout to allow Vue reactivity to flush before resetting validation

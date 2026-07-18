@@ -19,12 +19,31 @@ export const useSettingStore = defineStore('setting', {
     suppliers: (state) => state.settings.filter(s => s.type.toLowerCase() === 'supplier').map(s => s.value),
     departments: (state) => state.settings.filter(s => s.type.toLowerCase() === 'department').map(s => s.value),
     locations: (state) => state.settings.filter(s => s.type.toLowerCase() === 'location').map(s => s.value),
+    buildings: (state) => state.settings.filter(s => s.type.toLowerCase() === 'building').map(s => s.value),
+    
+    locationsByBuilding: (state) => {
+      const locationSettings = state.settings.filter(s => s.type.toLowerCase() === 'location')
+      const tree: Record<string, string[]> = {}
+      locationSettings.forEach(s => {
+        if (s.value.includes(' > ')) {
+          const [building, room] = s.value.split(' > ')
+          if (!tree[building]) tree[building] = []
+          tree[building].push(room)
+        } else {
+          // Fallback if no building prefix
+          if (!tree['Unassigned']) tree['Unassigned'] = []
+          tree['Unassigned'].push(s.value)
+        }
+      })
+      return tree
+    },
     
     // For the Settings page UI which needs the IDs for deletion
     rawCategories: (state) => state.settings.filter(s => s.type.toLowerCase() === 'category'),
     rawSuppliers: (state) => state.settings.filter(s => s.type.toLowerCase() === 'supplier'),
     rawDepartments: (state) => state.settings.filter(s => s.type.toLowerCase() === 'department'),
-    rawLocations: (state) => state.settings.filter(s => s.type.toLowerCase() === 'location')
+    rawLocations: (state) => state.settings.filter(s => s.type.toLowerCase() === 'location'),
+    rawBuildings: (state) => state.settings.filter(s => s.type.toLowerCase() === 'building')
   },
 
   actions: {

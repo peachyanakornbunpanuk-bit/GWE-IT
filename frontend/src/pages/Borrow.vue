@@ -39,9 +39,12 @@
                   <q-input outlined v-model="form.reason" type="textarea" label="Notes / Reason for Borrowing *" placeholder="e.g. For remote work, for streaming event..." rows="2" required />
                 </div>
                 <!-- Location Field -->
-                <div class="col-12 col-md-6">
-                  <q-select outlined v-model="form.location" :options="settingStore.locations" label="Destination Room (Optional)" placeholder="Where will the item be used?" clearable />
-                  <div class="text-caption text-grey q-mt-xs">If selected, the asset's location will automatically update in the system.</div>
+                <div class="col-12 col-md-3">
+                  <q-select outlined v-model="selectedBuilding" :options="settingStore.buildings" label="Destination Building" clearable />
+                </div>
+                <div class="col-12 col-md-3">
+                  <q-select outlined v-model="selectedRoom" :options="availableRooms" label="Destination Room" :disable="!selectedBuilding" clearable />
+                  <div class="text-caption text-grey q-mt-xs">If selected, the asset's location will automatically update.</div>
                 </div>
               </div>
 
@@ -240,9 +243,12 @@ const form = ref({
   borrow_date: borrowDateDefault,
   expected_return_date: returnDateDefault,
   reason: '',
-  location: '',
   items: [{ category: '', asset_id: '' }] 
 })
+
+const selectedBuilding = ref('')
+const selectedRoom = ref('')
+const availableRooms = computed(() => selectedBuilding.value ? settingStore.locationsByBuilding[selectedBuilding.value] || [] : [])
 
 // Details Dialog state
 const detailsDialog = ref(false)
@@ -353,26 +359,42 @@ const columns = [
 ] as any
 
 const onBorrow = async () => {
-  const assetIds = form.value.items.map(item => item.asset_id).filter(id => id !== '')
+  if (isCartInvalid.value) return
   
-  const uniqueIds = new Set(assetIds);
-  if (uniqueIds.size !== assetIds.length) {
-    $q.notify({ color: 'negative', message: 'Error: Duplicate items detected in cart.', position: 'top' });
-    return;
-  }
-  
-  await txStore.borrowAsset(assetIds, form.value.employee_id, form.value.borrow_date, form.value.expected_return_date, form.value.reason, form.value.location)
-  $q.notify({ color: 'positive', message: `Checked out ${assetIds.length} item(s) successfully`, position: 'top-right' })
-  
-  // FIX: Reset form fully
-  form.value.employee_id = ''
-  form.value.reason = ''
-  form.value.location = ''
-  form.value.items = [{ category: '', asset_id: '' }]
-  
-  // Reset quasar form validation state
-  if (checkoutForm.value) {
-    (checkoutForm.value as any).resetValidation()
+  try {
+    const locationStr = selectedBuilding.value && selectedRoom.value ? `${selectedBuilding.value} > ${selectedRoom.value}` : ''
+    
+    const assetIds = form.value.items.map(item => item.asset_id).filter(id => id !== '')
+    const uniqueIds = new Set(assetIds);
+    if (uniqueIds.size !== assetIds.length) {
+      $q.notify({ color: 'negative', message: 'Error: Duplicate items detected in cart.', position: 'top' });
+      return;
+    }
+    
+    await txStore.borrowAsset(assetIds, form.value.employee_id, form.value.borrow_date, form.value.expected_return_date, form.value.reason, locationStr)
+    $q.notify({ color: 'positive', message: `Checked out ${assetIds.length} item(s) successfully`, position: 'top-right' })
+    
+    // Reset form
+    form.value = {
+      employee_id: '',
+      borrow_date: borrowDateDefault,
+      expected_return_date: returnDateDefault,
+      reason: '',
+      items: [{ category: '', asset_id: '' }]
+    }
+    selectedBuilding.value = ''
+    selectedRoom.value = ''
+    
+    // Refresh items to remove checked out assets
+    assetStore.fetchAssets()
+    txStore.fetchAllTransactions()
+    
+    // Reset quasar form validation state
+    if (checkoutForm.value) {
+      (checkoutForm.value as any).resetValidation()
+    }
+  } catch (error) {
+    $q.notify({ color: 'negative', message: 'Failed to checkout items', position: 'top-right' })
   }
 }
 

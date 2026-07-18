@@ -134,7 +134,14 @@
             <q-input outlined v-model="form.id" label="Asset ID (Optional - Auto-generates if blank)" />
             <q-input outlined v-model="form.name" label="Asset Name" required />
             <q-select outlined v-model="form.category" :options="settingStore.categories" label="Category" required />
-            <q-select outlined v-model="form.location" :options="settingStore.locations" label="Location (Room/Area)" required />
+            <div class="row q-col-gutter-sm">
+              <div class="col-6">
+                <q-select outlined v-model="selectedBuilding" :options="settingStore.buildings" label="Building" required />
+              </div>
+              <div class="col-6">
+                <q-select outlined v-model="selectedRoom" :options="availableRooms" label="Room" :disable="!selectedBuilding" required />
+              </div>
+            </div>
             <q-select outlined v-model="form.status" :options="['Available', 'Borrowed', 'Repair', 'Damaged']" label="Status" required />
             <q-input outlined v-model.number="form.value" type="number" label="Value (฿)" required />
             <q-input outlined v-model.number="form.quantity" type="number" label="Quantity" min="1" required :disable="!!form.id" :hint="form.id ? 'Quantity must be 1 when assigning a manual Asset ID' : ''" />
@@ -162,7 +169,14 @@
             <q-input outlined v-model="form.id" label="Asset ID" disable readonly hint="Asset ID cannot be changed" />
             <q-input outlined v-model="form.name" label="Asset Name" required />
             <q-select outlined v-model="form.category" :options="settingStore.categories" label="Category" required />
-            <q-select outlined v-model="form.location" :options="settingStore.locations" label="Location (Room/Area)" required />
+            <div class="row q-col-gutter-sm">
+              <div class="col-6">
+                <q-select outlined v-model="selectedBuilding" :options="settingStore.buildings" label="Building" required />
+              </div>
+              <div class="col-6">
+                <q-select outlined v-model="selectedRoom" :options="availableRooms" label="Room" :disable="!selectedBuilding" required />
+              </div>
+            </div>
             <q-select outlined v-model="form.status" :options="['Available', 'Borrowed', 'Repair', 'Damaged']" label="Status" required />
             <q-input outlined v-model.number="form.value" type="number" label="Value (฿)" required />
             <q-file outlined v-model="imageFile" label="Update Photo (Optional)" accept="image/*" dense clearable>
@@ -289,9 +303,15 @@ const editingId = ref('')
 const form = ref({ id: '', name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 })
 const imageFile = ref<File | null>(null)
 
+const selectedBuilding = ref('')
+const selectedRoom = ref('')
+const availableRooms = computed(() => selectedBuilding.value ? settingStore.locationsByBuilding[selectedBuilding.value] || [] : [])
+
 watch(addDialog, (val) => {
   if (!val) {
     form.value = { id: '', name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
+    selectedBuilding.value = ''
+    selectedRoom.value = ''
     imageFile.value = null
   }
 })
@@ -318,7 +338,7 @@ const columns = [
   { name: 'id', label: 'Asset ID', field: 'id', align: 'left', sortable: true },
   { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
   { name: 'category', label: 'Category', field: 'category', align: 'left', sortable: true },
-  { name: 'location', label: 'Location', field: 'location', align: 'left', sortable: true },
+  { name: 'location', label: 'Location', field: (row: any) => (row.location && row.location.includes(' > ')) ? row.location.replace(' > ', ' - ') : row.location, align: 'left', sortable: true },
   { name: 'status', label: 'Status', field: 'status', align: 'center', sortable: true },
   { name: 'holder', label: 'Holder', field: 'holder', align: 'left', sortable: true },
   { name: 'value', label: 'Value (฿)', field: 'value', align: 'right', sortable: true },
@@ -340,7 +360,8 @@ const onAdd = async () => {
     if (imageFile.value) {
       imageUrl = await uploadImage(imageFile.value)
     }
-    const qty = form.value.quantity || 1
+    const qty = form.value.quantity
+    form.value.location = `${selectedBuilding.value} > ${selectedRoom.value}`
     
     if (qty > 1) {
       const assets = []
@@ -355,6 +376,8 @@ const onAdd = async () => {
     }
     addDialog.value = false
     form.value = { id: '', name: '', category: '', status: 'Available', value: 0, image_url: '', location: '', quantity: 1 }
+    selectedBuilding.value = ''
+    selectedRoom.value = ''
     imageFile.value = null
     $q.notify({ color: 'positive', message: `Successfully added ${qty} asset(s)`, position: 'top-right' })
   } catch (err: any) {
@@ -365,6 +388,16 @@ const onAdd = async () => {
 const openEdit = (row: any) => {
   editingId.value = row.id
   form.value = { ...row }
+  
+  const locParts = row.location ? row.location.split(' > ') : []
+  if (locParts.length > 1) {
+    selectedBuilding.value = locParts[0]
+    selectedRoom.value = locParts[1]
+  } else {
+    selectedBuilding.value = ''
+    selectedRoom.value = row.location || ''
+  }
+  
   imageFile.value = null
   editDialog.value = true
 }
@@ -375,6 +408,8 @@ const onEdit = async () => {
     if (imageFile.value) {
       imageUrl = await uploadImage(imageFile.value)
     }
+    form.value.location = `${selectedBuilding.value} > ${selectedRoom.value}`
+    
     await axios.put(`${API_URL}/assets/${encodeURIComponent(editingId.value)}`, {
       ...form.value,
       image_url: imageUrl,

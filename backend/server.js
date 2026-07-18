@@ -589,7 +589,7 @@ app.get('/api/borrow', (req, res) => {
 });
 
 app.post('/api/borrow', (req, res) => {
-    const { asset_ids, employee_id, borrow_date, expected_return_date, reason, user } = req.body;
+    const { asset_ids, employee_id, borrow_date, expected_return_date, reason, user, location } = req.body;
     
     if (!asset_ids || asset_ids.length === 0) return res.status(400).json({ error: "No assets provided" });
 
@@ -598,7 +598,11 @@ app.post('/api/borrow', (req, res) => {
         
         asset_ids.forEach(id => {
             db.run(`INSERT INTO borrow_records (asset_id, employee_id, borrow_date, expected_return_date, reason, status) VALUES (?, ?, ?, ?, ?, 'Active')`, [id, employee_id, borrow_date, expected_return_date, reason]);
-            db.run(`UPDATE assets SET status = 'Borrowed', holder = ? WHERE id = ?`, [employee_id, id]);
+            if (location) {
+                db.run(`UPDATE assets SET status = 'Borrowed', holder = ?, location = ? WHERE id = ?`, [employee_id, location, id]);
+            } else {
+                db.run(`UPDATE assets SET status = 'Borrowed', holder = ? WHERE id = ?`, [employee_id, id]);
+            }
             
             logAudit(id, 'BORROW', `Borrowed by ${employee_id}. Reason: ${reason || 'N/A'}`, user);
             createNotification('GLOBAL_IT', 'Asset Borrowed', `Asset ${id} checked out by ${employee_id}`, `/asset/${id}/scan`, 'swap_horiz', 'warning');
