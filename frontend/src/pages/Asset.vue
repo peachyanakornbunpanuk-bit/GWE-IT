@@ -72,6 +72,7 @@
       <q-separator />
 
       <q-table
+        ref="assetTable"
         flat class="bg-transparent"
         :rows="store.assets"
         :columns="columns"
@@ -222,7 +223,7 @@
     <q-dialog v-model="bulkPrintDialog" maximized transition-show="slide-up" transition-hide="slide-down">
       <q-card class="bg-white" id="bulk-print-area">
         <div class="row items-center justify-between q-pa-md hide-on-print bg-grey-2 shadow-2" style="position: sticky; top: 0; z-index: 10;">
-          <div class="text-h6 text-weight-bold text-dark">Bulk Print Labels ({{ filteredAssets.length }} Items)</div>
+          <div class="text-h6 text-weight-bold text-dark">Print Visible Labels ({{ visibleAssets.length }} Items)</div>
           <div>
             <q-btn flat color="grey-7" label="Cancel" v-close-popup class="q-mr-sm" />
             <q-btn color="primary" icon="print" label="Print All" @click="printQr" />
@@ -230,7 +231,7 @@
         </div>
         
         <div class="print-grid q-pa-lg">
-          <div v-for="asset in filteredAssets" :key="asset.id" class="print-label row items-center">
+          <div v-for="asset in visibleAssets" :key="asset.id" class="print-label row items-center">
             <!-- Left: QR Code -->
             <div class="col-auto q-mr-md" style="padding-left: 8px;">
               <qrcode-vue :value="`${baseUrl}/asset/${asset.id}/scan`" :size="100" level="H" />
@@ -272,6 +273,7 @@ const bulkPrintDialog = ref(false)
 const addDialog = ref(false)
 const editDialog = ref(false)
 const qrDialog = ref(false)
+const assetTable = ref<any>(null)
 
 const baseUrl = window.location.origin
 
@@ -286,8 +288,12 @@ const filteredAssets = computed(() => {
   )
 })
 
+const visibleAssets = computed(() => {
+  return assetTable.value ? assetTable.value.computedRows : []
+})
+
 const openBulkPrint = () => {
-  if (filteredAssets.value.length === 0) {
+  if (visibleAssets.value.length === 0) {
     $q.notify({ color: 'warning', message: 'No assets visible to print.', position: 'top' })
     return
   }
@@ -542,6 +548,10 @@ const exportExcel = () => {
     width: auto !important;
   }
   
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
   #bulk-print-area, #bulk-print-area * {
     visibility: visible;
   }
@@ -554,12 +564,16 @@ const exportExcel = () => {
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
   }
   .print-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 15px !important;
     padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   .print-label {
     border: 2px solid #000 !important;
