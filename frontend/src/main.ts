@@ -20,6 +20,22 @@ axios.interceptors.request.use((config) => {
   return config
 })
 
+// Auto-Logout on Expired Token
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      // Clear auth data
+      localStorage.removeItem('auth')
+      // Redirect to login if not already there
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      }
+    }
+    return Promise.reject(error)
+  }
+)
+
 app.use(pinia)
 app.use(router)
 
