@@ -541,46 +541,36 @@ const exportExcel = () => {
 </script>
 
 <style scoped>
+</style>
+
+<style>
 @media print {
+  #q-app {
+    display: none !important;
+  }
   body, html {
     overflow: visible !important;
     height: auto !important;
+    min-height: auto !important;
+    background: white !important;
   }
   .q-dialog, .q-dialog__inner {
-    position: relative !important;
+    position: static !important;
     display: block !important;
     height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
     overflow: visible !important;
     transform: none !important;
   }
-  body * {
-    visibility: hidden;
+  .q-dialog__backdrop {
+    display: none !important;
   }
-  #qr-print-area, #qr-print-area * {
-    visibility: visible;
+  .hide-on-print {
+    display: none !important;
   }
-  #qr-print-area {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: auto !important;
-  }
-  
-  @page {
-    size: A4;
-    margin: 15mm;
-  }
-  #bulk-print-area, #bulk-print-area * {
-    visibility: visible;
-  }
-  #bulk-print-area {
-    position: relative !important;
-    left: 0 !important;
-    top: 0 !important;
+  #bulk-print-area, #qr-print-area {
+    position: static !important;
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
@@ -588,7 +578,12 @@ const exportExcel = () => {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
+    max-height: none !important;
     overflow: visible !important;
+  }
+  @page {
+    size: A4;
+    margin: 15mm;
   }
   .print-grid {
     display: grid !important;
@@ -605,10 +600,6 @@ const exportExcel = () => {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
     box-sizing: border-box !important;
-  }
-
-  .hide-on-print {
-    display: none !important;
   }
   .print-container {
     border: 2px solid #000 !important;
