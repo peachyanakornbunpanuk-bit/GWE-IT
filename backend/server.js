@@ -162,7 +162,7 @@ const upload = multer({ storage });
 app.use(express.json());
 app.use('/uploads', express.static(uploadDir));
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok', version: '1.0.1' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', version: '1.0.2' }));
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
