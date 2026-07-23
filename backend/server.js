@@ -271,16 +271,20 @@ app.put('/api/notifications/read-all', (req, res) => {
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     
-    if (!username || !password) {
+    const safeUsername = String(username).trim();
+    
+    if (!safeUsername || !password) {
         return res.status(400).json({ error: "Username and password are required" });
     }
 
-    db.get("SELECT id, username, password as hash, role FROM users WHERE username = ?", [username], async (err, user) => {
+    db.get("SELECT id, username, password as hash, role FROM users WHERE LOWER(username) = LOWER(?)", [safeUsername], async (err, user) => {
         try {
             if (err) return res.status(500).json({ error: err.message });
             if (!user) return res.status(401).json({ error: "Invalid credentials" });
             
-            const validPassword = await bcrypt.compare(String(password), String(user.hash));
+            // Trim password to handle mobile keyboard trailing spaces
+            const safePassword = String(password).trim();
+            const validPassword = await bcrypt.compare(safePassword, String(user.hash));
             if (!validPassword) return res.status(401).json({ error: "Invalid credentials" });
             
             const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '8h' });

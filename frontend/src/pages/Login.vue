@@ -67,6 +67,9 @@
               v-model="username" 
               label="Username" 
               lazy-rules
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
               :rules="[val => !!val || 'Username is required']"
             >
               <template v-slot:prepend><q-icon name="person" /></template>
@@ -78,6 +81,9 @@
               type="password" 
               label="Password"
               lazy-rules
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
               :rules="[val => !!val || 'Password is required']"
             >
               <template v-slot:prepend><q-icon name="lock" /></template>
