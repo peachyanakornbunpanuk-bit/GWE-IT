@@ -135,14 +135,7 @@ const handleLogin = async () => {
   loading.value = true
   showWaitHint.value = false
   
-  // Show a hint if login is taking longer than 2.5 seconds (likely a cold start)
-  const waitTimer = setTimeout(() => {
-    showWaitHint.value = true
-  }, 2500)
-  
   const success = await authStore.login(username.value, password.value)
-  
-  clearTimeout(waitTimer)
   
   if (success) {
     $q.notify({ color: 'positive', message: `Welcome back, ${authStore.user?.role}!`, position: 'top' })
