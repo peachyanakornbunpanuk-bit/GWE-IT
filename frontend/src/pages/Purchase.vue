@@ -152,6 +152,7 @@
               :rows="txStore.purchases"
               :columns="columns"
               row-key="id"
+              :grid="$q.screen.lt.md"
               :pagination="{ rowsPerPage: 5 }"
               @row-click="openDetails"
             >

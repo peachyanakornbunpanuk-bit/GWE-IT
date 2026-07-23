@@ -53,19 +53,38 @@
       <q-card-section class="q-pa-md row items-center justify-between">
         <div class="text-h6 text-dark text-weight-bold">Hardware Catalog</div>
         
-        <div class="row q-gutter-sm items-center">
-          <q-input outlined dense v-model="filter" placeholder="Search assets..." class="bg-white" style="width: 250px">
+        <div class="row q-gutter-sm items-center" style="flex: 1; min-width: 0; justify-content: flex-end;">
+          <q-input outlined dense v-model="filter" placeholder="Search assets..." class="bg-white col-grow" style="min-width: 150px; max-width: 300px">
             <template v-slot:append>
               <q-icon name="search" />
             </template>
           </q-input>
           
-          <q-btn color="secondary" unelevated icon="print" label="Print Visible Labels" @click="openBulkPrint" style="border-radius: 6px;" />
-          <q-btn color="primary" unelevated icon="add" label="New Asset" @click="addDialog = true" style="border-radius: 6px;" />
+          <q-btn-dropdown color="secondary" unelevated icon="more_vert" label="Actions" style="border-radius: 6px;" v-if="$q.screen.lt.sm">
+            <q-list>
+              <q-item clickable v-close-popup @click="openBulkPrint">
+                <q-item-section avatar><q-icon name="print" color="secondary" /></q-item-section>
+                <q-item-section>Print Labels</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="triggerFileInput">
+                <q-item-section avatar><q-icon name="upload_file" color="secondary" /></q-item-section>
+                <q-item-section>Upload Excel</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="exportExcel">
+                <q-item-section avatar><q-icon name="download" color="positive" /></q-item-section>
+                <q-item-section>Export Excel</q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+
+          <template v-else>
+            <q-btn color="secondary" unelevated icon="print" label="Print Visible Labels" @click="openBulkPrint" style="border-radius: 6px;" />
+            <q-btn color="secondary" unelevated icon="upload_file" label="Upload Excel" @click="triggerFileInput" style="border-radius: 6px;" />
+            <q-btn color="positive" unelevated icon="download" label="Export Excel" @click="exportExcel" style="border-radius: 6px;" />
+          </template>
           
-          <q-btn color="secondary" unelevated icon="upload_file" label="Upload Excel" @click="triggerFileInput" style="border-radius: 6px;" />
           <input type="file" ref="fileInput" accept=".xlsx, .xls" style="display: none" @change="handleFileUpload" />
-          <q-btn color="positive" unelevated icon="download" label="Export Excel" @click="exportExcel" style="border-radius: 6px;" />
+          <q-btn color="primary" unelevated icon="add" :label="$q.screen.lt.sm ? '' : 'New Asset'" @click="addDialog = true" style="border-radius: 6px;" />
         </div>
       </q-card-section>
 
@@ -78,6 +97,7 @@
         :columns="columns"
         row-key="id"
         :filter="filter"
+        :grid="$q.screen.lt.md"
         v-model:pagination="pagination"
       >
         <template v-slot:body-cell-status="props">

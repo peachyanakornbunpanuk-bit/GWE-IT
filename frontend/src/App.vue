@@ -45,7 +45,7 @@
             <q-avatar size="32px" color="primary" text-color="white" class="q-mr-sm">
               {{ authStore.user?.username?.charAt(0).toUpperCase() }}
             </q-avatar>
-            <div class="text-left">
+            <div class="text-left gt-xs">
               <div class="text-weight-bold" style="line-height: 1.2">{{ authStore.user?.username }}</div>
               <div class="text-caption text-grey-6" style="line-height: 1.2">{{ authStore.user?.role }}</div>
             </div>

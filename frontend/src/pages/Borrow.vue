@@ -133,6 +133,7 @@
               :rows="groupedBorrows"
               :columns="columns"
               row-key="group_id"
+              :grid="$q.screen.lt.md"
               :pagination="{ rowsPerPage: 10 }"
               @row-click="(_, row) => openDetailsDialog(row)"
             >

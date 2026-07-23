@@ -97,6 +97,7 @@
             :columns="columns"
             row-key="id"
             :filter="search"
+            :grid="$q.screen.lt.md"
             :rows-per-page-options="[5]"
           >
             <template v-slot:body-cell-status="props">

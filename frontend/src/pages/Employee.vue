@@ -14,6 +14,7 @@
         :rows="store.employees"
         :columns="columns"
         row-key="id"
+        :grid="$q.screen.lt.md"
       >
         <template v-slot:body-cell-actions="props">
           <q-td :props="props" align="right">

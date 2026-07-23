@@ -128,6 +128,7 @@
               :rows="activeRepairs"
               :columns="columns"
               row-key="id"
+              :grid="$q.screen.lt.md"
               :pagination="{ rowsPerPage: 10 }"
             >
               <template v-slot:body-cell-asset_name="props">
