@@ -78,7 +78,7 @@
         :columns="columns"
         row-key="id"
         :filter="filter"
-        :pagination="{ rowsPerPage: 10 }"
+        v-model:pagination="pagination"
       >
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
@@ -288,13 +288,19 @@ const filteredAssets = computed(() => {
   )
 })
 
+const pagination = ref({
+  sortBy: 'id',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10
+})
+
 const visibleAssets = computed(() => {
   if (!assetTable.value) return []
   const rows = assetTable.value.computedRows
-  const pagination = assetTable.value.pagination
-  if (!pagination || pagination.rowsPerPage === 0) return rows
-  const start = (pagination.page - 1) * pagination.rowsPerPage
-  return rows.slice(start, start + pagination.rowsPerPage)
+  if (!pagination.value || pagination.value.rowsPerPage === 0) return rows
+  const start = (pagination.value.page - 1) * pagination.value.rowsPerPage
+  return rows.slice(start, start + pagination.value.rowsPerPage)
 })
 
 const openBulkPrint = () => {
@@ -561,7 +567,7 @@ const exportExcel = () => {
     visibility: visible;
   }
   #bulk-print-area {
-    position: absolute !important;
+    position: relative !important;
     left: 0 !important;
     top: 0 !important;
     box-shadow: none !important;
@@ -569,8 +575,9 @@ const exportExcel = () => {
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
-    height: 100% !important;
-    overflow: hidden !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
   }
   .print-grid {
     display: grid !important;
@@ -585,6 +592,8 @@ const exportExcel = () => {
     border-radius: 8px !important;
     padding: 8px !important;
     break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    box-sizing: border-box !important;
   }
 
   .hide-on-print {
