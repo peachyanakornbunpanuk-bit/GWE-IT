@@ -289,7 +289,12 @@ const filteredAssets = computed(() => {
 })
 
 const visibleAssets = computed(() => {
-  return assetTable.value ? assetTable.value.computedRows : []
+  if (!assetTable.value) return []
+  const rows = assetTable.value.computedRows
+  const pagination = assetTable.value.pagination
+  if (!pagination || pagination.rowsPerPage === 0) return rows
+  const start = (pagination.page - 1) * pagination.rowsPerPage
+  return rows.slice(start, start + pagination.rowsPerPage)
 })
 
 const openBulkPrint = () => {

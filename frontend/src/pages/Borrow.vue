@@ -42,10 +42,6 @@
                   <q-select outlined v-model="selectedRoom" :options="availableRooms" label="Destination Room" :disable="!selectedBuilding" clearable />
                   <div class="text-caption text-grey q-mt-xs">If selected, the asset's location will automatically update.</div>
                 </div>
-                <!-- Reason Field -->
-                <div class="col-12">
-                  <q-input outlined v-model="form.reason" type="textarea" label="Notes / Reason for Borrowing *" placeholder="e.g. For remote work, for streaming event..." rows="3" required />
-                </div>
               </div>
 
               <q-separator class="q-my-md" />
@@ -94,6 +90,15 @@
                     <q-icon name="error_outline" size="20px" class="q-mr-sm" />
                     <strong>Out of Stock:</strong> No items available in this category.
                   </div>
+                </div>
+              </div>
+              
+              <q-separator class="q-my-md" />
+              
+              <!-- Reason Field (Moved to bottom) -->
+              <div class="row q-col-gutter-md">
+                <div class="col-12">
+                  <q-input outlined v-model="form.reason" type="textarea" label="Notes / Reason for Borrowing *" placeholder="e.g. For remote work, for streaming event..." rows="3" required />
                 </div>
               </div>
 

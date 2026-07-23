@@ -94,6 +94,10 @@
                 style="border-radius: 8px"
                 :loading="loading"
               />
+              <div v-if="showWaitHint" class="text-center q-mt-sm text-caption text-orange-8 text-weight-medium fade-in">
+                <q-icon name="hourglass_empty" size="xs" class="q-mr-xs" />
+                Waking up secure server... (This may take up to a minute on the free tier)
+              </div>
             </div>
           </q-form>
         </q-card-section>
@@ -104,24 +108,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from '../stores/authStore'
+import axios from 'axios'
 
 const username = ref('')
 const password = ref('')
 const loading = ref(false)
 const loginDialog = ref(false)
+const showWaitHint = ref(false)
 const router = useRouter()
 const route = useRoute()
 const $q = useQuasar()
 const authStore = useAuthStore()
+const API_URL = import.meta.env.VITE_API_URL || '/api'
+
+onMounted(() => {
+  // Pre-emptively ping the backend to wake up the Render instance from cold sleep
+  // This shaves off 5-15 seconds while the user is typing their credentials.
+  axios.get(`${API_URL}/assets`).catch(() => {})
+})
 
 const handleLogin = async () => {
   loading.value = true
+  showWaitHint.value = false
+  
+  // Show a hint if login is taking longer than 2.5 seconds (likely a cold start)
+  const waitTimer = setTimeout(() => {
+    showWaitHint.value = true
+  }, 2500)
   
   const success = await authStore.login(username.value, password.value)
+  
+  clearTimeout(waitTimer)
   
   if (success) {
     $q.notify({ color: 'positive', message: `Welcome back, ${authStore.user?.role}!`, position: 'top' })
@@ -132,6 +153,7 @@ const handleLogin = async () => {
   }
   
   loading.value = false
+  showWaitHint.value = false
 }
 </script>
 

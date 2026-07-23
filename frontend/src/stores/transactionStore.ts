@@ -14,16 +14,16 @@ export const useTransactionStore = defineStore('transaction', {
   actions: {
     async fetchAllTransactions() {
       try {
-        const [b, r, p] = await Promise.all([
+        const [b, r, p] = await Promise.allSettled([
           axios.get(`${API_URL}/borrow`),
           axios.get(`${API_URL}/repair`),
           axios.get(`${API_URL}/purchase`)
         ])
-        this.borrows = b.data
-        this.repairs = r.data
-        this.purchases = p.data
+        if (b.status === 'fulfilled') this.borrows = b.value.data
+        if (r.status === 'fulfilled') this.repairs = r.value.data
+        if (p.status === 'fulfilled') this.purchases = p.value.data
       } catch (e) {
-        console.error(e)
+        console.error("Error fetching transactions:", e)
       }
     },
 
