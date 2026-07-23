@@ -618,65 +618,74 @@ app.post('/api/borrow', (req, res) => {
     
     if (!asset_ids || asset_ids.length === 0) return res.status(400).json({ error: "No assets provided" });
 
-    db.serialize(() => {
-        db.run('BEGIN TRANSACTION');
-        
-        asset_ids.forEach(id => {
-            db.run(`INSERT INTO borrow_records (asset_id, employee_id, borrow_date, expected_return_date, reason, status) VALUES (?, ?, ?, ?, ?, 'Active')`, [id, employee_id, borrow_date, expected_return_date, reason]);
-            if (location) {
-                db.run(`UPDATE assets SET status = 'Borrowed', holder = ?, location = ? WHERE id = ?`, [employee_id, location, id]);
-            } else {
-                db.run(`UPDATE assets SET status = 'Borrowed', holder = ? WHERE id = ?`, [employee_id, id]);
-            }
-            
-            logAudit(id, 'BORROW', `Borrowed by ${employee_id}. Reason: ${reason || 'N/A'}`, user);
-            createNotification('GLOBAL_IT', 'Asset Borrowed', `Asset ${id} checked out by ${employee_id}`, `/asset/${id}/scan`, 'swap_horiz', 'warning');
-            
-            const html = generateEmailHtml(
-                'Equipment Borrowed',
-                'This is an automated notification from the IT Asset Management System.',
-                'borrow',
-                'Borrowed',
-                {
-                    'Asset ID': id,
-                    'Employee ID': employee_id,
-                    'Reason': reason || 'N/A',
-                    'Time': new Date().toLocaleString()
-                }
-            );
-            sendEmail('🟠 Alert: Equipment Borrowed', `Asset ${id} borrowed by ${employee_id}`, html);
-        });
+    let completed = 0;
+    let hasError = false;
 
-        db.run('COMMIT', (err) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ message: "Assets Borrowed Successfully" });
+    asset_ids.forEach(id => {
+        db.run(`INSERT INTO borrow_records (asset_id, employee_id, borrow_date, expected_return_date, reason, status) VALUES (?, ?, ?, ?, ?, 'Active')`, [id, employee_id, borrow_date, expected_return_date, reason], (err) => {
+            if (err) { hasError = true; console.error(err); }
         });
+        
+        if (location) {
+            db.run(`UPDATE assets SET status = 'Borrowed', holder = ?, location = ? WHERE id = ?`, [employee_id, location, id], (err) => { if (err) console.error(err); });
+        } else {
+            db.run(`UPDATE assets SET status = 'Borrowed', holder = ? WHERE id = ?`, [employee_id, id], (err) => { if (err) console.error(err); });
+        }
+        
+        logAudit(id, 'BORROW', `Borrowed by ${employee_id}. Reason: ${reason || 'N/A'}`, user);
+        createNotification('GLOBAL_IT', 'Asset Borrowed', `Asset ${id} checked out by ${employee_id}`, `/asset/${id}/scan`, 'swap_horiz', 'warning');
+        
+        const html = generateEmailHtml(
+            'Equipment Borrowed',
+            'This is an automated notification from the IT Asset Management System.',
+            'borrow',
+            'Borrowed',
+            {
+                'Asset ID': id,
+                'Employee ID': employee_id,
+                'Reason': reason || 'N/A',
+                'Time': new Date().toLocaleString()
+            }
+        );
+        sendEmail('🟠 Alert: Equipment Borrowed', `Asset ${id} borrowed by ${employee_id}`, html);
+        
+        completed++;
+        if (completed === asset_ids.length) {
+            if (hasError) return res.status(500).json({ error: "Error borrowing some assets" });
+            res.json({ message: "Assets Borrowed Successfully" });
+        }
     });
 });
 
 app.post('/api/return', (req, res) => {
-    const { borrow_id, asset_id, return_date, user } = req.body;
-    db.serialize(() => {
-        db.run(`UPDATE borrow_records SET return_date = ?, status = 'Returned' WHERE asset_id = ? AND status = 'Active'`, [return_date, asset_id]);
-        db.run(`UPDATE assets SET status = 'Available', holder = '-', location = 'IT Room' WHERE id = ?`, [asset_id], function(err) {
-            logAudit(asset_id, 'RETURN', `Returned to inventory.`, user);
-            createNotification('GLOBAL_IT', 'Asset Returned', `Asset ${asset_id} was returned`, `/asset/${asset_id}/scan`, 'check_circle', 'positive');
-            
-            const html = generateEmailHtml(
-                'Equipment Returned',
-                'An item has been successfully returned to inventory.',
-                'return',
-                'Returned',
-                {
-                    'Asset ID': asset_id,
-                    'Returned By': user || 'System',
-                    'Time': new Date().toLocaleString()
-                }
-            );
-            sendEmail('🟢 Alert: Equipment Returned', `Asset ${asset_id} returned`, html);
-            
-            res.json({ message: "Asset Returned Successfully" });
-        });
+    const { borrow_id, asset_id, return_date, condition, user, location } = req.body;
+    
+    db.run(`UPDATE borrow_records SET return_date = ?, status = 'Returned' WHERE asset_id = ? AND status = 'Active'`, [return_date, asset_id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        if (location) {
+            db.run(`UPDATE assets SET status = 'Available', holder = '-', location = ? WHERE id = ?`, [location, asset_id]);
+        } else {
+            db.run(`UPDATE assets SET status = 'Available', holder = '-' WHERE id = ?`, [asset_id]);
+        }
+        
+        logAudit(asset_id, 'RETURN', `Returned in condition: ${condition || 'N/A'}`, user);
+        createNotification('GLOBAL_IT', 'Asset Returned', `Asset ${asset_id} returned. Condition: ${condition || 'N/A'}`, `/asset/${asset_id}/scan`, 'keyboard_return', 'info');
+        
+        const html = generateEmailHtml(
+            'Equipment Returned',
+            'An asset has been returned to the IT inventory.',
+            'return',
+            'Returned',
+            {
+                'Asset ID': asset_id,
+                'Condition': condition || 'N/A',
+                'Time': new Date().toLocaleString()
+            }
+        );
+        sendEmail('🟢 Alert: Equipment Returned', `Asset ${asset_id} returned`, html);
+        
+        res.json({ message: "Asset Returned Successfully" });
     });
 });
 
