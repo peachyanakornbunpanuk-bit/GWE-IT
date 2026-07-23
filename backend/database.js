@@ -16,17 +16,16 @@ const db = new sqlite3.Database(url, (err) => {
     } else {
         console.log('Connected to the Turso SQLite database.');
         
-        db.serialize(() => {
-            db.run(`
-                CREATE TABLE IF NOT EXISTS assets (
-                    id TEXT PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    category TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    holder TEXT,
-                    value REAL
-                )
-            `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS assets (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                category TEXT NOT NULL,
+                status TEXT NOT NULL,
+                holder TEXT,
+                value REAL
+            )
+        `);
             db.run("ALTER TABLE assets ADD COLUMN image_url TEXT", (err) => { /* ignore if exists */ });
             db.run("ALTER TABLE assets ADD COLUMN location TEXT DEFAULT '-'", (err) => { /* ignore if exists */ });
             db.run(`
@@ -128,17 +127,16 @@ const db = new sqlite3.Database(url, (err) => {
                 }
             });
 
-            // Seed default employees for the auth users
-            db.get("SELECT COUNT(*) as count FROM employees WHERE id IN ('manager', 'it', 'user')", [], (err, row) => {
-                if (!err && row.count === 0) {
-                    const empStmt = db.prepare("INSERT OR IGNORE INTO employees (id, name, department, email) VALUES (?, ?, ?, ?)");
-                    empStmt.run('manager', 'Manager Admin', 'Management', 'manager@company.com');
-                    empStmt.run('it', 'IT Administrator', 'IT Support', 'it@company.com');
-                    empStmt.run('user', 'Standard Employee', 'Operations', 'user@company.com');
-                    empStmt.finalize();
-                    console.log('Seeded default employees for auth accounts.');
-                }
-            });
+        // Seed default employees for the auth users
+        db.get("SELECT COUNT(*) as count FROM employees WHERE id IN ('manager', 'it', 'user')", [], (err, row) => {
+            if (!err && row.count === 0) {
+                const empStmt = db.prepare("INSERT OR IGNORE INTO employees (id, name, department, email) VALUES (?, ?, ?, ?)");
+                empStmt.run('manager', 'Manager Admin', 'Management', 'manager@company.com');
+                empStmt.run('it', 'IT Administrator', 'IT Support', 'it@company.com');
+                empStmt.run('user', 'Standard Employee', 'Operations', 'user@company.com');
+                empStmt.finalize();
+                console.log('Seeded default employees for auth accounts.');
+            }
         });
     }
 });
