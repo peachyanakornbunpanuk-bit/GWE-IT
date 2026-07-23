@@ -377,11 +377,9 @@ app.put('/api/settings/:id', (req, res) => {
     db.get(`SELECT type, value as oldValue FROM settings WHERE id = ?`, [req.params.id], (err, row) => {
         if (err || !row) return res.status(500).json({ error: "Setting not found" });
         
-        db.serialize(() => {
-            db.run(`BEGIN TRANSACTION`);
-            
-            // 1. Update the setting itself
-            db.run(`UPDATE settings SET value = ? WHERE id = ?`, [value, req.params.id]);
+        // 1. Update the setting itself
+        db.run(`UPDATE settings SET value = ? WHERE id = ?`, [value, req.params.id], (err) => {
+            if (err) return res.status(500).json({ error: err.message });
             
             // 2. Cascade changes based on type
             if (row.type === 'Category') {
@@ -396,10 +394,7 @@ app.put('/api/settings/:id', (req, res) => {
                 db.run(`UPDATE assets SET location = ? WHERE location = ?`, [value, row.oldValue]);
             }
             
-            db.run(`COMMIT`, (err) => {
-                if (err) return res.status(500).json({ error: err.message });
-                res.json({ message: "Setting updated and changes cascaded successfully" });
-            });
+            res.json({ message: "Setting updated and changes cascaded successfully" });
         });
     });
 });
@@ -558,19 +553,15 @@ app.post('/api/assets/bulk', (req, res) => {
             rows.forEach(r => imageMap[r.name] = r.image_url);
         }
 
-        db.serialize(() => {
-            db.run('BEGIN TRANSACTION');
-            const stmt = db.prepare(`INSERT OR REPLACE INTO assets (id, name, category, status, holder, value, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)`);
-            
-            assets.forEach(a => {
-                stmt.run([a.id, a.name, a.category, a.status || 'Available', a.holder || null, a.value || 0, imageMap[a.name] || null]);
-            });
-            
-            stmt.finalize();
-            db.run('COMMIT', (err) => {
-                if (err) return res.status(500).json({ error: err.message });
-                res.json({ message: `Successfully synced ${assets.length} assets` });
-            });
+        const stmt = db.prepare(`INSERT OR REPLACE INTO assets (id, name, category, status, holder, value, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)`);
+        
+        assets.forEach(a => {
+            stmt.run([a.id, a.name, a.category, a.status || 'Available', a.holder || null, a.value || 0, imageMap[a.name] || null]);
+        });
+        
+        stmt.finalize((err) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: `Successfully synced ${assets.length} assets` });
         });
     });
 });
@@ -725,9 +716,11 @@ app.post('/api/repair', (req, res) => {
 
 app.post('/api/repair/finish', (req, res) => {
     const { repair_id, asset_id, user } = req.body;
-    db.serialize(() => {
-        db.run(`UPDATE repair_records SET status = 'Completed' WHERE id = ?`, [repair_id]);
+    db.run(`UPDATE repair_records SET status = 'Completed' WHERE id = ?`, [repair_id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
         db.run(`UPDATE assets SET status = 'Available' WHERE id = ?`, [asset_id], function(err) {
+            if (err) return res.status(500).json({ error: err.message });
             logAudit(asset_id, 'REPAIR_RESOLVED', `Repaired completely and returned to inventory`, user);
             createNotification('GLOBAL_IT', 'Repair Completed', `Asset ${asset_id} is back in inventory`, `/asset/${asset_id}/scan`, 'build_circle', 'positive');
             res.json({ message: "Repair Completed" });
@@ -743,43 +736,43 @@ app.get('/api/purchase', (req, res) => {
 app.post('/api/purchase', (req, res) => {
     const { item_name, category, supplier, unit_cost, purchase_date, quantity = 1, user, location = '-' } = req.body;
     
-    db.serialize(() => {
-        const totalCost = unit_cost * quantity;
-        
-        db.run(`INSERT INTO purchases (item_name, category, supplier, cost, unit_cost, quantity, purchase_date, status, location) VALUES (?, ?, ?, ?, ?, ?, ?, 'Received', ?)`, [item_name, category, supplier, totalCost, unit_cost, quantity, purchase_date, location]);
+    const totalCost = unit_cost * quantity;
+    
+    db.run(`INSERT INTO purchases (item_name, category, supplier, cost, unit_cost, quantity, purchase_date, status, location) VALUES (?, ?, ?, ?, ?, ?, ?, 'Received', ?)`, [item_name, category, supplier, totalCost, unit_cost, quantity, purchase_date, location], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
         
         getNextAssetId(category, (prefix, nextNum) => {
             db.get("SELECT image_url FROM assets WHERE name = ? AND image_url IS NOT NULL AND image_url != '' LIMIT 1", [item_name], (err, imgRow) => {
                 const foundImageUrl = imgRow ? imgRow.image_url : null;
                 
-                db.run('BEGIN TRANSACTION');
                 const stmt = db.prepare(`INSERT INTO assets (id, name, category, status, holder, value, image_url, location) VALUES (?, ?, ?, 'Available', '-', ?, ?, ?)`);
                 let currentNum = nextNum;
                 for (let i = 0; i < quantity; i++) {
                     const assetId = `${prefix}-${String(currentNum).padStart(4, '0')}`;
-                    stmt.run(assetId, item_name, category, unit_cost, foundImageUrl, location);
+                    stmt.run([assetId, item_name, category, unit_cost, foundImageUrl, location]);
                     logAudit(assetId, 'PURCHASED', `Procured from ${supplier} via bulk order`, user);
                     currentNum++;
                 }
-                stmt.finalize();
-                createNotification('GLOBAL_IT', 'Procurement Arrived', `${quantity}x ${item_name} received from ${supplier}`, `/purchase`, 'shopping_cart', 'info');
                 
-                const html = generateEmailHtml(
-                    'Procurement Arrived',
-                    'A new bulk purchase has arrived and assets have been automatically generated.',
-                    'add',
-                    'Received',
-                    {
-                        'Item Name': item_name,
-                        'Quantity': quantity,
-                        'Supplier': supplier,
-                        'Total Cost': `฿${parseFloat(totalCost).toLocaleString()}`
-                    }
-                );
-                sendEmail('📦 Procurement Alert: New Hardware Arrived', `${quantity}x ${item_name} received from ${supplier}.`, html);
-                
-                db.run('COMMIT', (err) => {
+                stmt.finalize((err) => {
                     if (err) return res.status(500).json({ error: err.message });
+                    
+                    createNotification('GLOBAL_IT', 'Procurement Arrived', `${quantity}x ${item_name} received from ${supplier}`, `/purchase`, 'shopping_cart', 'info');
+                    
+                    const html = generateEmailHtml(
+                        'Procurement Arrived',
+                        'A new bulk purchase has arrived and assets have been automatically generated.',
+                        'add',
+                        'Received',
+                        {
+                            'Item Name': item_name,
+                            'Quantity': quantity,
+                            'Supplier': supplier,
+                            'Total Cost': `฿${parseFloat(totalCost).toLocaleString()}`
+                        }
+                    );
+                    sendEmail('📦 Procurement Alert: New Hardware Arrived', `${quantity}x ${item_name} received from ${supplier}.`, html);
+                    
                     res.json({ message: "Purchase completed and assets auto-generated" });
                 });
             });
