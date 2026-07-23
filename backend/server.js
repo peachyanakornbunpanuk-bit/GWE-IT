@@ -268,17 +268,27 @@ app.put('/api/notifications/read-all', (req, res) => {
 // AUTHENTICATION
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
+    
+    if (!username || !password) {
+        return res.status(400).json({ error: "Username and password are required" });
+    }
+
     db.get("SELECT id, username, password as hash, role FROM users WHERE username = ?", [username], async (err, user) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (!user) return res.status(401).json({ error: "Invalid credentials" });
-        
-        const validPassword = await bcrypt.compare(password, user.hash);
-        if (!validPassword) return res.status(401).json({ error: "Invalid credentials" });
-        
-        const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '8h' });
-        delete user.hash;
-        
-        res.json({ message: "Login successful", user, token });
+        try {
+            if (err) return res.status(500).json({ error: err.message });
+            if (!user) return res.status(401).json({ error: "Invalid credentials" });
+            
+            const validPassword = await bcrypt.compare(String(password), String(user.hash));
+            if (!validPassword) return res.status(401).json({ error: "Invalid credentials" });
+            
+            const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '8h' });
+            delete user.hash;
+            
+            res.json({ message: "Login successful", user, token });
+        } catch (error) {
+            console.error("Login error:", error);
+            res.status(500).json({ error: "Internal server error during login" });
+        }
     });
 });
 
