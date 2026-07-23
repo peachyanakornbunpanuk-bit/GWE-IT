@@ -849,11 +849,16 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
             query += " GROUP BY name, category, status LIMIT 500";
             
             db.all(query, params, async (err, rows) => {
-                if (err) return res.status(500).json({ error: err.message });
-                const toolResult = await chat.sendMessage([{
-                    functionResponse: { name: "search_assets", response: { items: rows } }
-                }]);
-                res.json({ text: toolResult.response.text() });
+                try {
+                    if (err) return res.status(500).json({ error: err.message });
+                    const toolResult = await chat.sendMessage([{
+                        functionResponse: { name: "search_assets", response: { items: rows } }
+                    }]);
+                    res.json({ text: toolResult.response.text() });
+                } catch (toolErr) {
+                    console.error("Gemini Tool Error:", toolErr);
+                    res.status(500).json({ text: "Sorry, I encountered an error while searching the database." });
+                }
             });
         } else {
             res.json({ text: result.response.text() });

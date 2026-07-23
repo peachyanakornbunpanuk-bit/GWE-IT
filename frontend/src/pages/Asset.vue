@@ -542,6 +542,17 @@ const exportExcel = () => {
 
 <style scoped>
 @media print {
+  body, html {
+    overflow: visible !important;
+    height: auto !important;
+  }
+  .q-dialog, .q-dialog__inner {
+    position: relative !important;
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
   body * {
     visibility: hidden;
   }
