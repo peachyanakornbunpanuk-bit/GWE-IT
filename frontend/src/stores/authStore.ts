@@ -12,14 +12,36 @@ export const useAuthStore = defineStore('auth', {
       isAuthenticated: !!authData?.token
     }
   },
+
+  getters: {
+    isSuperAdmin: (state) => {
+      const role = state.user?.role;
+      return role === 'Super Admin' || role === 'Manager';
+    },
+    isWarehouseStaff: (state) => {
+      const role = state.user?.role;
+      return role === 'Warehouse Staff' || role === 'IT Officer' || role === 'Super Admin' || role === 'Manager';
+    },
+    isEmployee: (state) => {
+      const role = state.user?.role;
+      return role === 'General Employee' || role === 'Employee';
+    },
+    userRole: (state) => state.user?.role || 'General Employee'
+  },
   
   actions: {
+    initAuth() {
+      if (this.token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+      }
+    },
     async login(username: string, password: string): Promise<boolean> {
       try {
         const response = await axios.post(`${API_URL}/login`, { username, password })
         this.user = response.data.user
         this.token = response.data.token
         this.isAuthenticated = true
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
         localStorage.setItem('auth', JSON.stringify({ user: this.user, token: this.token }))
         return true
       } catch (err) {
@@ -32,6 +54,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       this.token = null
       this.isAuthenticated = false
+      delete axios.defaults.headers.common['Authorization']
       localStorage.removeItem('auth')
     }
   }

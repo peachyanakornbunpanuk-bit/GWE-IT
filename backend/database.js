@@ -56,6 +56,11 @@ const db = new sqlite3.Database(url, (err) => {
                     status TEXT NOT NULL
                 )
             `);
+            db.run("ALTER TABLE borrow_records ADD COLUMN signature_data TEXT", (err) => { /* ignore if exists */ });
+            db.run("ALTER TABLE borrow_records ADD COLUMN condition TEXT", (err) => { /* ignore if exists */ });
+            db.run("ALTER TABLE borrow_records ADD COLUMN return_condition_photo TEXT", (err) => { /* ignore if exists */ });
+            db.run("ALTER TABLE borrow_records ADD COLUMN overdue_notified INTEGER DEFAULT 0", (err) => { /* ignore if exists */ });
+
             db.run(`
                 CREATE TABLE IF NOT EXISTS repair_records (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -110,6 +115,51 @@ const db = new sqlite3.Database(url, (err) => {
                     timestamp TEXT NOT NULL,
                     icon TEXT,
                     color TEXT
+                )
+            `);
+
+            db.run(`
+                CREATE TABLE IF NOT EXISTS audit_sessions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    month TEXT NOT NULL,
+                    status TEXT NOT NULL,
+                    opened_by TEXT NOT NULL,
+                    opened_at TEXT NOT NULL,
+                    closed_by TEXT,
+                    closed_at TEXT,
+                    total_expected INTEGER DEFAULT 0,
+                    total_scanned INTEGER DEFAULT 0,
+                    total_missing INTEGER DEFAULT 0,
+                    notes TEXT
+                )
+            `);
+
+            db.run(`
+                CREATE TABLE IF NOT EXISTS audit_snapshots (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER NOT NULL,
+                    asset_id TEXT NOT NULL,
+                    asset_name TEXT NOT NULL,
+                    category TEXT NOT NULL,
+                    location TEXT,
+                    expected_status TEXT NOT NULL,
+                    is_scanned INTEGER DEFAULT 0,
+                    scanned_at TEXT,
+                    scanned_by TEXT,
+                    condition TEXT,
+                    notes TEXT
+                )
+            `);
+
+            db.run(`
+                CREATE TABLE IF NOT EXISTS system_backups (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    filename TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    size_bytes INTEGER NOT NULL,
+                    created_by TEXT,
+                    type TEXT DEFAULT 'manual'
                 )
             `);
 

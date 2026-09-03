@@ -14,6 +14,11 @@
         
         <!-- Global Search -->
         <q-btn flat round dense icon="search" class="q-mr-sm text-grey-7" @click="searchDialog = true" />
+
+        <!-- Smart Camera Scanner Quick Launch -->
+        <q-btn flat round dense icon="qr_code_scanner" class="q-mr-sm text-primary" @click="globalScannerOpen = true">
+          <q-tooltip>Open Smart Camera Scanner</q-tooltip>
+        </q-btn>
         
         <q-btn flat round dense icon="notifications_none" class="q-mr-md text-grey-7">
           <q-badge color="negative" floating rounded v-if="notifStore.unreadCount > 0">{{ notifStore.unreadCount }}</q-badge>
@@ -71,7 +76,8 @@
             <q-item-section class="text-weight-medium">Dashboard</q-item-section>
           </q-item>
           
-          <template v-if="authStore.user?.role !== 'Employee'">
+          <!-- Warehouse Staff & Super Admin Menu -->
+          <template v-if="authStore.isWarehouseStaff">
             <q-item to="/asset" clickable v-ripple active-class="active-nav" class="nav-item">
               <q-item-section avatar><q-icon name="computer" size="22px" /></q-item-section>
               <q-item-section class="text-weight-medium">Asset Inventory</q-item-section>
@@ -80,11 +86,18 @@
               <q-item-section avatar><q-icon name="swap_horiz" size="22px" /></q-item-section>
               <q-item-section class="text-weight-medium">Borrow / Return</q-item-section>
             </q-item>
+            <q-item to="/audit" clickable v-ripple active-class="active-nav" class="nav-item">
+              <q-item-section avatar><q-icon name="fact_check" size="22px" color="positive" /></q-item-section>
+              <q-item-section class="text-weight-medium">Monthly Stock Check</q-item-section>
+            </q-item>
             <q-item to="/repair" clickable v-ripple active-class="active-nav" class="nav-item">
               <q-item-section avatar><q-icon name="build" size="22px" /></q-item-section>
               <q-item-section class="text-weight-medium">Repair Hub</q-item-section>
             </q-item>
-            
+          </template>
+
+          <!-- Super Admin Menu -->
+          <template v-if="authStore.isSuperAdmin">
             <div class="q-pa-md text-overline text-grey-6 q-mt-sm">Administration</div>
             
             <q-item to="/purchase" clickable v-ripple active-class="active-nav" class="nav-item">
@@ -95,13 +108,17 @@
               <q-item-section avatar><q-icon name="people" size="22px" /></q-item-section>
               <q-item-section class="text-weight-medium">Employees</q-item-section>
             </q-item>
+            <q-item to="/audit-trail" clickable v-ripple active-class="active-nav" class="nav-item">
+              <q-item-section avatar><q-icon name="history" size="22px" /></q-item-section>
+              <q-item-section class="text-weight-medium">Audit Trail</q-item-section>
+            </q-item>
             <q-item to="/report" clickable v-ripple active-class="active-nav" class="nav-item">
               <q-item-section avatar><q-icon name="assessment" size="22px" /></q-item-section>
               <q-item-section class="text-weight-medium">Reports</q-item-section>
             </q-item>
             <q-item to="/setting" clickable v-ripple active-class="active-nav" class="nav-item">
               <q-item-section avatar><q-icon name="settings" size="22px" /></q-item-section>
-              <q-item-section class="text-weight-medium">Settings</q-item-section>
+              <q-item-section class="text-weight-medium">Settings & Backup</q-item-section>
             </q-item>
           </template>
         </q-list>
@@ -180,6 +197,7 @@
       </router-view>
     </q-page-container>
     <ChatWidget />
+    <SmartScannerModal v-model="globalScannerOpen" mode="single" @scan="handleGlobalScan" />
   </q-layout>
   <router-view v-else />
 </template>
@@ -194,11 +212,18 @@ import { useSettingStore } from './stores/settingStore'
 import { useAuthStore } from './stores/authStore'
 import { useNotificationStore } from './stores/notificationStore'
 import ChatWidget from './components/ChatWidget.vue'
+import SmartScannerModal from './components/SmartScannerModal.vue'
 
 const drawer = ref(true)
 const searchDialog = ref(false)
 const searchQuery = ref('')
+const globalScannerOpen = ref(false)
 const router = useRouter()
+
+const handleGlobalScan = (code: string) => {
+  globalScannerOpen.value = false
+  router.push(`/asset/${code}/scan`)
+}
 
 const assetStore = useAssetStore()
 const txStore = useTransactionStore()
