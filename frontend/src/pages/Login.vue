@@ -133,26 +133,35 @@ const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 onMounted(() => {
   // Pre-emptively ping the backend to wake up the Render instance from cold sleep
-  // This shaves off 5-15 seconds while the user is typing their credentials.
-  axios.get(`${API_URL}/assets`).catch(() => {})
+  axios.get(`${API_URL}/health`).catch(() => {})
 })
 
 const handleLogin = async () => {
   loading.value = true
   showWaitHint.value = false
   
-  const success = await authStore.login(username.value, password.value)
-  
-  if (success) {
-    $q.notify({ color: 'positive', message: `Welcome back, ${authStore.user?.role}!`, position: 'top' })
-    const redirectPath = route.query.redirect as string || '/'
-    router.push(redirectPath)
-  } else {
-    $q.notify({ color: 'negative', message: 'Invalid username or password', position: 'top' })
+  // If server is in cold sleep (takes > 1.2s), show helpful wake-up indicator
+  const timer = setTimeout(() => {
+    showWaitHint.value = true
+  }, 1200)
+
+  try {
+    const success = await authStore.login(username.value, password.value)
+    
+    if (success) {
+      $q.notify({ color: 'positive', message: `Welcome back, ${authStore.user?.role}!`, position: 'top' })
+      const redirectPath = route.query.redirect as string || '/'
+      router.push(redirectPath)
+    } else {
+      $q.notify({ color: 'negative', message: 'Invalid username or password', position: 'top' })
+    }
+  } catch (err) {
+    $q.notify({ color: 'negative', message: 'Login failed. Please check your connection.', position: 'top' })
+  } finally {
+    clearTimeout(timer)
+    loading.value = false
+    showWaitHint.value = false
   }
-  
-  loading.value = false
-  showWaitHint.value = false
 }
 </script>
 
