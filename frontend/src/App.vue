@@ -213,6 +213,7 @@ import { useAuthStore } from './stores/authStore'
 import { useNotificationStore } from './stores/notificationStore'
 import ChatWidget from './components/ChatWidget.vue'
 import SmartScannerModal from './components/SmartScannerModal.vue'
+import axios from 'axios'
 
 const drawer = ref(true)
 const searchDialog = ref(false)
@@ -254,11 +255,18 @@ const handleNetworkReconnect = async () => {
   }
 }
 
+let heartbeatInterval: any = null
+
 onMounted(async () => {
   if (authStore.isAuthenticated) {
     initializeStores()
   }
   window.addEventListener('online', handleNetworkReconnect)
+
+  // Keep-alive heartbeat every 10 minutes to keep backend server awake
+  heartbeatInterval = setInterval(() => {
+    axios.get(`${import.meta.env.VITE_API_URL || '/api'}/health`).catch(() => {})
+  }, 10 * 60 * 1000)
 })
 
 watch(() => authStore.isAuthenticated, (newVal) => {
@@ -270,18 +278,23 @@ watch(() => authStore.isAuthenticated, (newVal) => {
 })
 
 const initializeStores = async () => {
-  await Promise.all([
-    assetStore.fetchAssets(),
-    txStore.fetchAllTransactions(),
-    empStore.fetchEmployees(),
-    settingStore.fetchSettings()
-  ])
+  const promises: Promise<any>[] = []
+  if (assetStore.assets.length === 0) promises.push(assetStore.fetchAssets())
+  if (txStore.borrows.length === 0) promises.push(txStore.fetchAllTransactions())
+  if (empStore.employees.length === 0) promises.push(empStore.fetchEmployees())
+  if (settingStore.settings.length === 0) promises.push(settingStore.fetchSettings())
+
+  if (promises.length > 0) {
+    await Promise.allSettled(promises)
+  }
+
   if (authStore.user) {
     notifStore.startPolling(authStore.user.username, authStore.user.role)
   }
 }
 
 onUnmounted(() => {
+  if (heartbeatInterval) clearInterval(heartbeatInterval)
   notifStore.stopPolling()
   window.removeEventListener('online', handleNetworkReconnect)
 })

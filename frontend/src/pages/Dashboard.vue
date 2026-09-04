@@ -505,7 +505,9 @@ const columns = [
 ] as any
 
 onMounted(() => {
-  assetStore.fetchAssets()
+  if (assetStore.assets.length === 0) {
+    assetStore.fetchAssets()
+  }
   fetchDashboardData()
 })
 </script>
